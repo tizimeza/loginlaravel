@@ -9,6 +9,7 @@ class Tarea extends Model
 {
     use HasFactory;
 
+<<<<<<< HEAD
     protected $table = 'tareas';
     
     protected $fillable = ['titulo', 'completada'];
@@ -17,3 +18,11 @@ class Tarea extends Model
         'completada' => 'boolean'
     ];
 }
+=======
+    protected $fillable = ['titulo', 'completada'];
+    
+    protected $casts = [
+        'completada' => 'boolean',
+    ];
+}
+>>>>>>> 6480bc3 (git)

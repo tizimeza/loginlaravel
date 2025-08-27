@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -103,3 +104,27 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 </body>
 </html>
+=======
+<h1>Lista de Tareas</h1>
+
+<form action="/tareas" method="POST">
+@csrf
+<input type="text" name="titulo" placeholder="Nueva tarea">
+<button type="submit">Agregar</button>
+</form>
+
+<ul>
+@foreach($tareas as $tarea)
+<li>
+{{ $tarea->titulo }} -
+<a href="/tareas/{{ $tarea->id }}/edit">Editar</a>
+
+<form action="/tareas/{{ $tarea->id }}" method="POST"
+style="display:inline;">
+@csrf @method('DELETE')
+<button type="submit">Eliminar</button>
+</form>
+</li>
+@endforeach
+</ul>
+>>>>>>> 6480bc3 (git)
