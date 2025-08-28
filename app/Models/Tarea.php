@@ -9,20 +9,29 @@ class Tarea extends Model
 {
     use HasFactory;
 
-<<<<<<< HEAD
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'tareas';
-    
-    protected $fillable = ['titulo', 'completada'];
 
-    protected $casts = [
-        'completada' => 'boolean'
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'titulo',
+        'completada'
     ];
-}
-=======
-    protected $fillable = ['titulo', 'completada'];
-    
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'completada' => 'boolean',
     ];
 }
->>>>>>> 6480bc3 (git)
