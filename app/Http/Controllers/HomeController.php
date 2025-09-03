@@ -24,7 +24,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $tareas = Tarea::all();
+        $tareas = Tarea::where('user_id', auth()->id())->get();
         return view('home', compact('tareas'));
     }
 }

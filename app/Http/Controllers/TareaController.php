@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class TareaController extends Controller
 {
-<<<<<<< HEAD
     public function __construct()
     {
         $this->middleware('auth');
@@ -15,7 +14,7 @@ class TareaController extends Controller
 
     public function index()
     {
-        $tareas = Tarea::all();
+        $tareas = Tarea::where('user_id', auth()->id())->get();
         return view('tareas.index', compact('tareas'));
     }
 
@@ -27,14 +26,19 @@ class TareaController extends Controller
 
         $tarea = new Tarea();
         $tarea->nombre = $request->nombre;
+        $tarea->user_id = auth()->id();
         $tarea->save();
+
+        if (request()->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Tarea creada exitosamente']);
+        }
 
         return redirect()->route('tareas.index')->with('success', 'Tarea creada exitosamente');
     }
 
     public function edit($id)
     {
-        $tarea = Tarea::findOrFail($id);
+        $tarea = Tarea::where('user_id', auth()->id())->findOrFail($id);
         return view('tareas.edit', compact('tarea'));
     }
 
@@ -45,47 +49,27 @@ class TareaController extends Controller
             'completada' => 'boolean'
         ]);
 
-        $tarea = Tarea::findOrFail($id);
+        $tarea = Tarea::where('user_id', auth()->id())->findOrFail($id);
         $tarea->nombre = $request->nombre;
-        $tarea->completada = $request->completada ?? false;
+        $tarea->completada = $request->has('completada') ? (bool)$request->completada : false;
         $tarea->save();
+
+        if (request()->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Tarea actualizada exitosamente']);
+        }
 
         return redirect()->route('tareas.index')->with('success', 'Tarea actualizada exitosamente');
     }
 
     public function destroy($id)
     {
-        $tarea = Tarea::findOrFail($id);
+        $tarea = Tarea::where('user_id', auth()->id())->findOrFail($id);
         $tarea->delete();
+
+        if (request()->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Tarea eliminada exitosamente']);
+        }
+
         return redirect()->route('tareas.index')->with('success', 'Tarea eliminada exitosamente');
     }
-=======
-    public function index() {
-$tareas = Tarea::all();
-return view('tareas.index', compact('tareas'));
-}
-
-public function store(Request $request) {
-Tarea::create($request->only('titulo'));
-return redirect('/');
-}
-
-public function edit($id) {
-$tarea = Tarea::findOrFail($id);
-return view('tareas.edit', compact('tarea'));
-}
-
-public function update(Request $request, $id) {
-
-$tarea = Tarea::findOrFail($id);
-$tarea->update($request->only('titulo', 'completada'));
-return redirect('/');
-}
-
-public function destroy($id) {
-$tarea = Tarea::findOrFail($id);
-$tarea->delete();
-return redirect('/');
-}
->>>>>>> 6480bc3 (git)
 }

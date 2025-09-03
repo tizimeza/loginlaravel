@@ -22,8 +22,10 @@ class Tarea extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'titulo',
-        'completada'
+        'nombre',
+        'titulo', 
+        'completada',
+        'user_id'
     ];
 
     /**
@@ -34,4 +36,12 @@ class Tarea extends Model
     protected $casts = [
         'completada' => 'boolean',
     ];
+
+    /**
+     * Get the user that owns the task.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

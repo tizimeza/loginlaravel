@@ -1,130 +1,157 @@
-<<<<<<< HEAD
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Tareas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Lista de Tareas</h1>
-            @auth
-                <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                    @csrf
-                    <button type="submit" class="btn btn-outline-danger">Cerrar Sesión</button>
-                </form>
-            @else
-                <div>
-                    <a href="{{ route('login') }}" class="btn btn-primary">Iniciar Sesión</a>
-                    <a href="{{ route('register') }}" class="btn btn-outline-primary">Registrarse</a>
-                </div>
-            @endauth
-        </div>
+@extends('layouts.admin')
 
+@section('title', 'Gestión de Tareas')
+
+@section('breadcrumb')
+<li class="breadcrumb-item"><a href="{{route('home')}}">Inicio</a></li>
+<li class="breadcrumb-item active">Tareas</li>
+@endsection
+
+@section('content')
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-tasks mr-1"></i>
+          Lista de Tareas
+        </h3>
+        <div class="card-tools">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-nueva-tarea">
+            <i class="fas fa-plus"></i> Nueva Tarea
+          </button>
+        </div>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
         @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
+          <div class="alert alert-success alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h5><i class="icon fas fa-check"></i> ¡Éxito!</h5>
+            {{ session('success') }}
+          </div>
         @endif
 
         @if($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
+          <div class="alert alert-danger alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <h5><i class="icon fas fa-ban"></i> Error!</h5>
+            <ul class="mb-0">
+              @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
         @endif
 
-        @auth
-            <div class="card mb-4">
-                <div class="card-body">
-                    <form action="{{ route('tareas.store') }}" method="POST" class="d-flex gap-2">
-                        @csrf
-                        <div class="flex-grow-1">
-                            <input type="text" name="nombre" class="form-control @error('nombre') is-invalid @enderror" 
-                                   placeholder="Nueva tarea" value="{{ old('nombre') }}" required>
-                            @error('nombre')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <button type="submit" class="btn btn-primary">Agregar</button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-body">
-                    @if($tareas->isEmpty())
-                        <p class="text-center text-muted">No hay tareas pendientes</p>
-                    @else
-                        <ul class="list-group">
-                            @foreach($tareas as $tarea)
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <form action="{{ route('tareas.update', $tarea->id) }}" method="POST" class="me-2">
-                                            @csrf
-                                            @method('PUT')
-                                            <input type="hidden" name="completada" value="{{ $tarea->completada ? 0 : 1 }}">
-                                            <button type="submit" class="btn btn-sm {{ $tarea->completada ? 'btn-success' : 'btn-outline-success' }}">
-                                                <i class="bi bi-check-lg"></i>
-                                            </button>
-                                        </form>
-                                        <span class="{{ $tarea->completada ? 'text-decoration-line-through text-muted' : '' }}">
-                                            {{ $tarea->nombre }}
-                                        </span>
-                                    </div>
-                                    <div class="d-flex gap-2">
-                                        <a href="{{ route('tareas.edit', $tarea->id) }}" class="btn btn-sm btn-warning">Editar</a>
-                                        <form action="{{ route('tareas.destroy', $tarea->id) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar esta tarea?')">Eliminar</button>
-                                        </form>
-                                    </div>
-                                </li>
-                            @endforeach
-                        </ul>
-                    @endif
-                </div>
-            </div>
+        @if($tareas->isEmpty())
+          <div class="callout callout-info">
+            <h5>No hay tareas</h5>
+            <p>No tienes tareas registradas. ¡Crea tu primera tarea!</p>
+          </div>
         @else
-            <div class="alert alert-info">
-                <h4 class="alert-heading">¡Bienvenido!</h4>
-                <p>Para gestionar tus tareas, por favor inicia sesión o regístrate.</p>
-            </div>
-        @endauth
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th style="width: 10px">#</th>
+                  <th>Tarea</th>
+                  <th>Estado</th>
+                  <th>Fecha Creación</th>
+                  <th style="width: 150px">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($tareas as $tarea)
+                  <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td class="{{ $tarea->completada ? 'text-decoration-line-through text-muted' : '' }}">
+                      {{ $tarea->nombre }}
+                    </td>
+                    <td>
+                      @if($tarea->completada)
+                        <span class="badge badge-success">Completada</span>
+                      @else
+                        <span class="badge badge-warning">Pendiente</span>
+                      @endif
+                    </td>
+                    <td>{{ $tarea->created_at->format('d/m/Y H:i') }}</td>
+                    <td>
+                      <div class="btn-group btn-group-sm" role="group">
+                        <form action="{{ route('tareas.update', $tarea->id) }}" method="POST" class="d-inline">
+                          @csrf
+                          @method('PUT')
+                          <input type="hidden" name="completada" value="{{ $tarea->completada ? 0 : 1 }}">
+                          <button type="submit" class="btn {{ $tarea->completada ? 'btn-warning' : 'btn-success' }}" 
+                                  title="{{ $tarea->completada ? 'Marcar como pendiente' : 'Marcar como completada' }}">
+                            <i class="fas {{ $tarea->completada ? 'fa-undo' : 'fa-check' }}"></i>
+                          </button>
+                        </form>
+                        <a href="{{ route('tareas.edit', $tarea->id) }}" class="btn btn-info" title="Editar">
+                          <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="{{ route('tareas.destroy', $tarea->id) }}" method="POST" class="d-inline">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="btn btn-danger" 
+                                  onclick="return confirm('¿Estás seguro de eliminar esta tarea?')"
+                                  title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+        @endif
+      </div>
+      <!-- /.card-body -->
     </div>
+    <!-- /.card -->
+  </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-</body>
-</html>
-=======
-<h1>Lista de Tareas</h1>
-
-<form action="/tareas" method="POST">
-@csrf
-<input type="text" name="titulo" placeholder="Nueva tarea">
-<button type="submit">Agregar</button>
-</form>
-
-<ul>
-@foreach($tareas as $tarea)
-<li>
-{{ $tarea->titulo }} -
-<a href="/tareas/{{ $tarea->id }}/edit">Editar</a>
-
-<form action="/tareas/{{ $tarea->id }}" method="POST"
-style="display:inline;">
-@csrf @method('DELETE')
-<button type="submit">Eliminar</button>
-</form>
-</li>
-@endforeach
-</ul>
->>>>>>> 6480bc3 (git)
+<!-- Modal Nueva Tarea -->
+<div class="modal fade" id="modal-nueva-tarea">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Nueva Tarea</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="{{ route('tareas.store') }}" method="POST">
+        @csrf
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="nombre">Nombre de la Tarea</label>
+            <input type="text" 
+                   name="nombre" 
+                   id="nombre"
+                   class="form-control @error('nombre') is-invalid @enderror" 
+                   placeholder="Ingresa el nombre de la tarea" 
+                   value="{{ old('nombre') }}" 
+                   required>
+            @error('nombre')
+              <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+          </div>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Guardar Tarea
+          </button>
+        </div>
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+@endsection

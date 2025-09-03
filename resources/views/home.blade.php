@@ -1,14 +1,88 @@
 @extends('layouts.admin')
 
+@section('title', 'Dashboard')
+
+@section('breadcrumb')
+<li class="breadcrumb-item"><a href="{{route('home')}}">Inicio</a></li>
+<li class="breadcrumb-item active">Dashboard</li>
+@endsection
+
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0">Mis Tareas</h2>
-                    <a href="{{ route('tareas.index') }}" class="btn btn-primary">Ver todas las tareas</a>
-                </div>
+<!-- Small boxes (Stat box) -->
+<div class="row">
+  <div class="col-lg-3 col-6">
+    <!-- small box -->
+    <div class="small-box bg-info">
+      <div class="inner">
+        <h3>{{ $tareas->count() }}</h3>
+        <p>Total Tareas</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-tasks"></i>
+      </div>
+      <a href="{{ route('tareas.index') }}" class="small-box-footer">Más info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+  <!-- ./col -->
+  <div class="col-lg-3 col-6">
+    <!-- small box -->
+    <div class="small-box bg-success">
+      <div class="inner">
+        <h3>{{ $tareas->where('completada', true)->count() }}</h3>
+        <p>Completadas</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-check"></i>
+      </div>
+      <a href="{{ route('tareas.index') }}" class="small-box-footer">Más info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+  <!-- ./col -->
+  <div class="col-lg-3 col-6">
+    <!-- small box -->
+    <div class="small-box bg-warning">
+      <div class="inner">
+        <h3>{{ $tareas->where('completada', false)->count() }}</h3>
+        <p>Pendientes</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-clock"></i>
+      </div>
+      <a href="{{ route('tareas.index') }}" class="small-box-footer">Más info <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+  <!-- ./col -->
+  <div class="col-lg-3 col-6">
+    <!-- small box -->
+    <div class="small-box bg-danger">
+      <div class="inner">
+        <h3>{{ Auth::user()->name }}</h3>
+        <p>Usuario Activo</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-user"></i>
+      </div>
+      <a href="#" class="small-box-footer">Perfil <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+  <!-- ./col -->
+</div>
+<!-- /.row -->
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-tasks mr-1"></i>
+          Gestión de Tareas
+        </h3>
+        <div class="card-tools">
+          <a href="{{ route('tareas.index') }}" class="btn btn-primary btn-sm">
+            <i class="fas fa-list"></i> Ver todas las tareas
+          </a>
+        </div>
+      </div>
 
                 <div class="card-body">
                     @if(session('success'))
