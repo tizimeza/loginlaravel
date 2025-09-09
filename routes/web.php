@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TareaController;
+use App\Http\Controllers\VehiculoController; // <-- 1. IMPORTAR EL CONTROLADOR
 
 /*
 |--------------------------------------------------------------------------
@@ -18,12 +19,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Rutas que requieren que el usuario esté autenticado
 Route::middleware(['auth'])->group(function () {
+    // Rutas para Tareas
     Route::get('/tareas', [TareaController::class, 'index'])->name('tareas.index');
     Route::post('/tareas', [TareaController::class, 'store'])->name('tareas.store');
     Route::get('/tareas/{id}/edit', [TareaController::class, 'edit'])->name('tareas.edit');
     Route::put('/tareas/{id}', [TareaController::class, 'update'])->name('tareas.update');
     Route::delete('/tareas/{id}', [TareaController::class, 'destroy'])->name('tareas.destroy');
+
+    // <-- 2. AÑADIR LA RUTA DE RECURSO PARA VEHÍCULOS AQUÍ
+    Route::resource('vehiculos', VehiculoController::class);
 });
 
 Auth::routes();

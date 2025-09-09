@@ -8,79 +8,25 @@ use App\Http\Requests\UpdateVehiculoRequest;
 
 class VehiculoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+    // ... (aquí van los otros métodos como index, create, store, etc.)
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreVehiculoRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreVehiculoRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
+     * Muestra los detalles de un vehículo específico.
      *
      * @param  \App\Models\Vehiculo  $vehiculo
      * @return \Illuminate\Http\Response
      */
     public function show(Vehiculo $vehiculo)
     {
-        //
+        // Cargar las relaciones 'modelo' y, a través de modelo, 'marca'.
+        // Es más eficiente que usar ->load() después.
+        $vehiculo->load('modelo.marca');
+
+        // Retornamos una vista y le pasamos la variable $vehiculo
+        return view('vehiculos.show', [
+            'vehiculo' => $vehiculo
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Vehiculo  $vehiculo
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Vehiculo $vehiculo)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateVehiculoRequest  $request
-     * @param  \App\Models\Vehiculo  $vehiculo
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateVehiculoRequest $request, Vehiculo $vehiculo)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Vehiculo  $vehiculo
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Vehiculo $vehiculo)
-    {
-        //
-    }
+    // ... (aquí van los otros métodos como edit, update, destroy)
 }

@@ -1,22 +1,35 @@
 <?php
 
-namespace App\Models;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-class Marca extends Model
+return new class extends Migration
 {
-    use HasFactory;
-
-    // Campos que se pueden llenar masivamente
-    protected $fillable = ['nombre'];
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        // Este es el código para crear la tabla 'marcas' en la base de datos.
+        // Define un ID autoincremental, un campo 'nombre' que debe ser único,
+        // y las columnas de fecha 'created_at' y 'updated_at'.
+        Schema::create('marcas', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre')->unique();
+            $table->timestamps();
+        });
+    }
 
     /**
-     * Relación: Una Marca tiene muchos Modelos
+     * Reverse the migrations.
+     *
+     * @return void
      */
-    public function modelos()
+    public function down()
     {
-        return $this->hasMany(Modelo::class);
+        Schema::dropIfExists('marcas');
     }
-}
+};
