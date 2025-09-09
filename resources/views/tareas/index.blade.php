@@ -51,7 +51,7 @@
           </div>
         @else
           <div class="table-responsive">
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped" id="tablaTareas">
               <thead>
                 <tr>
                   <th style="width: 10px">#</th>
@@ -119,39 +119,4 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Nueva Tarea</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form action="{{ route('tareas.store') }}" method="POST">
-        @csrf
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="nombre">Nombre de la Tarea</label>
-            <input type="text" 
-                   name="nombre" 
-                   id="nombre"
-                   class="form-control @error('nombre') is-invalid @enderror" 
-                   placeholder="Ingresa el nombre de la tarea" 
-                   value="{{ old('nombre') }}" 
-                   required>
-            @error('nombre')
-              <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-          </div>
-        </div>
-        <div class="modal-footer justify-content-between">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save"></i> Guardar Tarea
-          </button>
-        </div>
-      </form>
-    </div>
-    <!-- /.modal-content -->
-  </div>
-  <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-@endsection
+        <h4 class="modal-title">N
