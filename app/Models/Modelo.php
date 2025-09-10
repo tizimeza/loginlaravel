@@ -9,6 +9,8 @@ class Modelo extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['nombre', 'marca_id'];
+
     /**
      * Define la relación inversa de uno a muchos.
      * Un modelo pertenece a una marca.

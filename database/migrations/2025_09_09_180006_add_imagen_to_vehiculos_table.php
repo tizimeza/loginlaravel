@@ -13,11 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('modelos', function (Blueprint $table) {
-            $table->id();
-            $table->string('nombre');
-            $table->foreignId('marca_id')->constrained('marcas')->onDelete('cascade');
-            $table->timestamps();
+        Schema::table('vehiculos', function (Blueprint $table) {
+            $table->string('imagen')->nullable()->after('modelo_id');
         });
     }
 
@@ -28,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('modelos');
+        Schema::table('vehiculos', function (Blueprint $table) {
+            $table->dropColumn('imagen');
+        });
     }
 };

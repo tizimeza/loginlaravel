@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Gestión de Tareas')
+@section('title', 'Tareas')
 
 @section('breadcrumb')
 <li class="breadcrumb-item"><a href="{{route('home')}}">Inicio</a></li>
@@ -119,4 +119,57 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">N
+        <h4 class="modal-title">Nueva Tarea</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="{{ route('tareas.store') }}" method="POST">
+        @csrf
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="nombre">Nombre de la Tarea</label>
+            <input type="text" 
+                   class="form-control @error('nombre') is-invalid @enderror" 
+                   id="nombre"
+                   name="nombre" 
+                   placeholder="Ingresa el nombre de la tarea"
+                   value="{{ old('nombre') }}"
+                   required>
+            @error('nombre')
+              <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+              </span>
+            @enderror
+          </div>
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Crear Tarea
+          </button>
+        </div>
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+@endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+  $('#tablaTareas').DataTable({
+    "responsive": true,
+    "lengthChange": false,
+    "autoWidth": false,
+    "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+    "language": {
+      "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+    }
+  }).buttons().container().appendTo('#tablaTareas_wrapper .col-md-6:eq(0)');
+});
+</script>
+@endpush

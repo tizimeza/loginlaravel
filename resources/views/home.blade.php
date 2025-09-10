@@ -42,13 +42,13 @@
     <!-- small box -->
     <div class="small-box bg-warning">
       <div class="inner">
-        <h3>{{ $tareas->where('completada', false)->count() }}</h3>
-        <p>Pendientes</p>
+        <h3>{{ $vehiculos->count() }}</h3>
+        <p>Total Vehículos</p>
       </div>
       <div class="icon">
-        <i class="fas fa-clock"></i>
+        <i class="fas fa-car"></i>
       </div>
-      <a href="{{ route('tareas.index') }}" class="small-box-footer">Más info <i class="fas fa-arrow-circle-right"></i></a>
+      <a href="{{ route('vehiculos.index') }}" class="small-box-footer">Más info <i class="fas fa-arrow-circle-right"></i></a>
     </div>
   </div>
   <!-- ./col -->
@@ -70,7 +70,7 @@
 <!-- /.row -->
 
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-6">
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">
@@ -156,5 +156,89 @@
             </div>
         </div>
     </div>
+  </div>
+
+  <!-- Sección de Vehículos -->
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-car mr-1"></i>
+          Vehículos Recientes
+        </h3>
+        <div class="card-tools">
+          <a href="{{ route('vehiculos.index') }}" class="btn btn-warning btn-sm">
+            <i class="fas fa-list"></i> Ver todos los vehículos
+          </a>
+        </div>
+      </div>
+
+      <div class="card-body">
+        @if($vehiculos->isEmpty())
+          <div class="text-center py-4">
+            <i class="fas fa-car fa-2x text-muted mb-3"></i>
+            <p class="text-muted">No hay vehículos registrados</p>
+            <a href="{{ route('vehiculos.create') }}" class="btn btn-warning btn-sm">
+              <i class="fas fa-plus"></i> Agregar Vehículo
+            </a>
+          </div>
+        @else
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Patente</th>
+                  <th>Marca</th>
+                  <th>Modelo</th>
+                  <th>Color</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($vehiculos->take(5) as $vehiculo)
+                <tr>
+                  <td><strong>{{ $vehiculo->patente }}</strong></td>
+                  <td>
+                    @if($vehiculo->modelo && $vehiculo->modelo->marca)
+                      {{ $vehiculo->modelo->marca->nombre }}
+                    @else
+                      <span class="text-muted">N/A</span>
+                    @endif
+                  </td>
+                  <td>
+                    @if($vehiculo->modelo)
+                      {{ $vehiculo->modelo->nombre }}
+                    @else
+                      <span class="text-muted">N/A</span>
+                    @endif
+                  </td>
+                  <td>
+                    <span class="badge badge-info badge-sm">{{ $vehiculo->color }}</span>
+                  </td>
+                  <td>
+                    <a href="{{ route('vehiculos.show', $vehiculo) }}" class="btn btn-xs btn-info" title="Ver">
+                      <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="{{ route('vehiculos.edit', $vehiculo) }}" class="btn btn-xs btn-warning" title="Editar">
+                      <i class="fas fa-edit"></i>
+                    </a>
+                  </td>
+                </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+
+          @if($vehiculos->count() > 5)
+            <div class="text-center mt-3">
+              <a href="{{ route('vehiculos.index') }}" class="btn btn-outline-warning btn-sm">
+                Ver todos los {{ $vehiculos->count() }} vehículos
+              </a>
+            </div>
+          @endif
+        @endif
+      </div>
+    </div>
+  </div>
 </div>
 @endsection

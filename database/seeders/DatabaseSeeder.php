@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
         $this->call(TareaSeeder::class);
         $this->call(CountrySeeder::class);
         $this->call(ProvinceSeeder::class);
+        $this->call(MarcaSeeder::class);
+        $this->call(ModeloSeeder::class);
+        $this->call(VehiculoSeeder::class);
 
         // \App\Models\User::factory(10)->create();
 

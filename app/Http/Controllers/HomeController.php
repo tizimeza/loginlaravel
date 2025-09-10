@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tarea;
+use App\Models\Vehiculo;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -25,6 +26,8 @@ class HomeController extends Controller
     public function index()
     {
         $tareas = Tarea::where('user_id', auth()->id())->get();
-        return view('home', compact('tareas'));
+        $vehiculos = Vehiculo::with('modelo.marca')->get();
+        
+        return view('home', compact('tareas', 'vehiculos'));
     }
 }

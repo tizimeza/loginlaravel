@@ -9,7 +9,7 @@ class Vehiculo extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['patente', 'color', 'anio', 'modelo_id'];
+    protected $fillable = ['patente', 'color', 'anio', 'modelo_id', 'imagen'];
 
     /**
      * Relación: un Vehículo pertenece a un Modelo
