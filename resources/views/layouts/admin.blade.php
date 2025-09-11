@@ -57,6 +57,15 @@
       <li class="nav-item d-none d-sm-inline-block">
         <a href="{{route('vehiculos.index')}}" class="nav-link">Vehículos</a>
       </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="{{route('ordenes_trabajo.index')}}" class="nav-link">Órdenes de Trabajo</a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="{{route('grupos_trabajo.index')}}" class="nav-link">Grupos</a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="{{route('stock.index')}}" class="nav-link">Stock</a>
+      </li>
     </ul>
 
     <!-- Right navbar links -->
@@ -215,12 +224,6 @@
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <li class="nav-item">
-            <a href="{{route('home')}}" class="nav-link {{request()->routeIs('home') ? 'active' : ''}}">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>Dashboard</p>
-            </a>
-          </li>
-          <li class="nav-item">
             <a href="{{route('tareas.index')}}" class="nav-link {{request()->routeIs('tareas.*') ? 'active' : ''}}">
               <i class="nav-icon fas fa-tasks"></i>
               <p>Tareas</p>
@@ -230,6 +233,24 @@
             <a href="{{route('vehiculos.index')}}" class="nav-link {{request()->routeIs('vehiculos.*') ? 'active' : ''}}">
               <i class="nav-icon fas fa-car"></i>
               <p>Vehículos</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{route('ordenes_trabajo.index')}}" class="nav-link {{request()->routeIs('ordenes_trabajo.*') ? 'active' : ''}}">
+              <i class="nav-icon fas fa-clipboard-list"></i>
+              <p>Órdenes de Trabajo</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{route('grupos_trabajo.index')}}" class="nav-link {{request()->routeIs('grupos_trabajo.*') ? 'active' : ''}}">
+              <i class="nav-icon fas fa-users"></i>
+              <p>Grupos de Trabajo</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{route('stock.index')}}" class="nav-link {{request()->routeIs('stock.*') ? 'active' : ''}}">
+              <i class="nav-icon fas fa-boxes"></i>
+              <p>Stock</p>
             </a>
           </li>
           <li class="nav-header">CONFIGURACIÓN</li>

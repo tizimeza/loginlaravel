@@ -25,7 +25,8 @@ class Tarea extends Model
         'nombre',
         'titulo', 
         'completada',
-        'user_id'
+        'user_id',
+        'orden_trabajo_id'
     ];
 
     /**
@@ -43,5 +44,13 @@ class Tarea extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the orden de trabajo that owns the task.
+     */
+    public function ordenTrabajo()
+    {
+        return $this->belongsTo(OrdenTrabajo::class, 'orden_trabajo_id');
     }
 }

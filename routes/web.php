@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TareaController;
 use App\Http\Controllers\VehiculoController; // <-- 1. IMPORTAR EL CONTROLADOR
+use App\Http\Controllers\OrdenTrabajoController;
+use App\Http\Controllers\GrupoTrabajoController;
+use App\Http\Controllers\StockController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +33,22 @@ Route::middleware(['auth'])->group(function () {
 
     // <-- 2. AÑADIR LA RUTA DE RECURSO PARA VEHÍCULOS AQUÍ
     Route::resource('vehiculos', VehiculoController::class);
+    
+    // Rutas para Órdenes de Trabajo
+    Route::resource('ordenes_trabajo', OrdenTrabajoController::class);
+    Route::patch('ordenes_trabajo/{ordenTrabajo}/cambiar_estado', [OrdenTrabajoController::class, 'cambiarEstado'])->name('ordenes_trabajo.cambiar_estado');
+    
+    // Rutas para Grupos de Trabajo
+    Route::resource('grupos_trabajo', GrupoTrabajoController::class);
+    Route::patch('grupos_trabajo/{grupoTrabajo}/toggle_activo', [GrupoTrabajoController::class, 'toggleActivo'])->name('grupos_trabajo.toggle_activo');
+    Route::post('grupos_trabajo/{grupoTrabajo}/agregar_miembro', [GrupoTrabajoController::class, 'agregarMiembro'])->name('grupos_trabajo.agregar_miembro');
+    Route::delete('grupos_trabajo/{grupoTrabajo}/remover_miembro/{user}', [GrupoTrabajoController::class, 'removerMiembro'])->name('grupos_trabajo.remover_miembro');
+    
+    // Rutas para Stock
+    Route::resource('stock', StockController::class);
+    Route::patch('stock/{stock}/ajustar_stock', [StockController::class, 'ajustarStock'])->name('stock.ajustar_stock');
+    Route::patch('stock/{stock}/toggle_activo', [StockController::class, 'toggleActivo'])->name('stock.toggle_activo');
+    Route::get('stock-bajo', [StockController::class, 'stockBajo'])->name('stock.stock_bajo');
 });
 
 Auth::routes();
