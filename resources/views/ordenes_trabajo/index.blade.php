@@ -94,17 +94,21 @@
               </thead>
               <tbody>
                 @foreach($ordenes as $orden)
-                <tr class="{{ $orden->es_atrasada ? 'table-warning' : '' }}">
+                <tr class="{{ ($orden->fecha_ingreso && $orden->fecha_ingreso < now()->subDays(7)) ? 'table-warning' : '' }}">
                   <td>
                     <strong>{{ $orden->numero_orden }}</strong>
-                    @if($orden->es_atrasada)
+                    @if($orden->fecha_ingreso && $orden->fecha_ingreso < now()->subDays(7))
                       <br><small class="text-danger"><i class="fas fa-clock"></i> Atrasada</small>
                     @endif
                   </td>
                   <td>
-                    <strong>{{ $orden->cliente_nombre }}</strong>
-                    @if($orden->cliente_telefono)
-                      <br><small class="text-muted">{{ $orden->cliente_telefono }}</small>
+                    @if($orden->cliente)
+                      <strong>{{ $orden->cliente->nombre }}</strong>
+                      @if($orden->cliente->telefono)
+                        <br><small class="text-muted">{{ $orden->cliente->telefono }}</small>
+                      @endif
+                    @else
+                      <span class="text-muted">Sin cliente</span>
                     @endif
                   </td>
                   <td>
@@ -120,19 +124,19 @@
                     @endif
                   </td>
                   <td>
-                    <span class="badge badge-{{ $orden->color_estado }}">
-                      {{ $orden->estado_formateado }}
+                    <span class="badge badge-{{ $orden->estado == 'nueva' ? 'success' : ($orden->estado == 'en_proceso' ? 'warning' : ($orden->estado == 'terminada' ? 'info' : 'danger')) }}">
+                      {{ ucfirst(str_replace('_', ' ', $orden->estado)) }}
                     </span>
                   </td>
                   <td>
-                    <span class="badge badge-{{ $orden->color_prioridad }}">
-                      {{ $orden->prioridad_formateada }}
+                    <span class="badge badge-{{ $orden->prioridad == 'alta' ? 'danger' : ($orden->prioridad == 'media' ? 'warning' : 'success') }}">
+                      {{ ucfirst($orden->prioridad) }}
                     </span>
                   </td>
-                  <td>{{ $orden->fecha_ingreso->format('d/m/Y') }}</td>
+                  <td>{{ $orden->fecha_ingreso ? \Carbon\Carbon::parse($orden->fecha_ingreso)->format('d/m/Y') : 'Sin fecha' }}</td>
                   <td>
-                    @if($orden->fecha_estimada_entrega)
-                      {{ $orden->fecha_estimada_entrega->format('d/m/Y') }}
+                    @if($orden->fecha_asignacion)
+                      {{ \Carbon\Carbon::parse($orden->fecha_asignacion)->format('d/m/Y') }}
                     @else
                       <span class="text-muted">Sin fecha</span>
                     @endif
@@ -145,18 +149,14 @@
                     @endif
                   </td>
                   <td>
-                    @if($orden->costo_estimado)
-                      ${{ number_format($orden->costo_estimado, 2) }}
-                    @else
-                      <span class="text-muted">N/A</span>
-                    @endif
+                    <span class="text-muted">N/A</span>
                   </td>
                   <td>
                     <div class="btn-group" role="group">
-                      <a href="{{ route('ordenes_trabajo.show', $orden) }}" class="btn btn-info btn-sm" title="Ver detalles">
+                      <a href="{{ route('ordenes_trabajo.show', $orden->id) }}" class="btn btn-info btn-sm" title="Ver detalles">
                         <i class="fas fa-eye"></i>
                       </a>
-                      <a href="{{ route('ordenes_trabajo.edit', $orden) }}" class="btn btn-warning btn-sm" title="Editar">
+                      <a href="{{ route('ordenes_trabajo.edit', $orden->id) }}" class="btn btn-warning btn-sm" title="Editar">
                         <i class="fas fa-edit"></i>
                       </a>
                       
@@ -169,7 +169,7 @@
                         <div class="dropdown-menu">
                           @foreach($estados as $key => $estado)
                             @if($key !== $orden->estado)
-                              <form action="{{ route('ordenes_trabajo.cambiar_estado', $orden) }}" method="POST" style="display: inline;">
+                              <form action="{{ route('ordenes_trabajo.cambiar_estado', $orden->id) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="estado" value="{{ $key }}">
@@ -183,7 +183,7 @@
                         </div>
                       </div>
                       
-                      <form action="{{ route('ordenes_trabajo.destroy', $orden) }}" method="POST" style="display: inline-block;">
+                      <form action="{{ route('ordenes_trabajo.destroy', $orden->id) }}" method="POST" style="display: inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm" title="Eliminar" 

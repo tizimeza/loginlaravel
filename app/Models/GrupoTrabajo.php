@@ -10,46 +10,61 @@ class GrupoTrabajo extends Model
     use HasFactory;
 
     protected $table = 'grupos_trabajo';
+    // protected $primaryKey = 'id_movil'; // Comentado porque la tabla usa 'id'
 
     protected $fillable = [
         'nombre',
         'descripcion',
         'lider_id',
+        'vehiculo_id',
         'activo',
         'color',
-        'especialidad'
+        'especialidad',
+        'capacidad_maxima',
+        'zona_trabajo'
     ];
 
     protected $casts = [
         'activo' => 'boolean',
     ];
 
-    // Especialidades disponibles
+    // Especialidades de los móviles
     const ESPECIALIDADES = [
-        'mecanica_general' => 'Mecánica General',
-        'electricidad' => 'Electricidad Automotriz',
-        'carroceria' => 'Carrocería y Pintura',
-        'neumaticos' => 'Neumáticos y Alineación',
-        'aire_acondicionado' => 'Aire Acondicionado',
-        'frenos' => 'Sistema de Frenos',
-        'transmision' => 'Transmisión',
-        'motor' => 'Motor',
-        'suspension' => 'Suspensión',
-        'diagnostico' => 'Diagnóstico Computarizado'
+        'instalacion'   => 'Instalación de servicio',
+        'reconexion'    => 'Reconexión',
+        'service'       => 'Mantenimiento / Service',
+        'desconexion'   => 'Desconexión',
+        'cableado'      => 'Cableado estructurado',
+        'fibra_optica'  => 'Fibra Óptica',
+        'wifi'          => 'Configuración Wi-Fi',
+        'soporte'       => 'Soporte técnico',
+        'general'       => 'Servicios generales'
     ];
 
-    // Colores disponibles para identificación visual
+    // Zonas de trabajo
+    const ZONAS_TRABAJO = [
+        'centro'        => 'Centro',
+        'norte'         => 'Zona Norte',
+        'sur'           => 'Zona Sur',
+        'este'          => 'Zona Este',
+        'oeste'         => 'Zona Oeste',
+        'suburbios'     => 'Suburbios',
+        'industrial'    => 'Zona Industrial',
+        'comercial'     => 'Zona Comercial',
+        'residencial'   => 'Zona Residencial'
+    ];
+
+    // Colores disponibles para identificar grupos en el dashboard
     const COLORES = [
-        'primary' => 'Azul',
-        'success' => 'Verde',
-        'warning' => 'Amarillo',
-        'danger' => 'Rojo',
-        'info' => 'Celeste',
+        'primary'   => 'Azul',
+        'success'   => 'Verde',
+        'warning'   => 'Amarillo',
+        'danger'    => 'Rojo',
+        'info'      => 'Celeste',
         'secondary' => 'Gris',
-        'dark' => 'Negro',
-        'purple' => 'Morado',
-        'pink' => 'Rosa',
-        'orange' => 'Naranja'
+        'dark'      => 'Negro',
+        'purple'    => 'Morado',
+        'orange'    => 'Naranja'
     ];
 
     /**
@@ -61,12 +76,37 @@ class GrupoTrabajo extends Model
     }
 
     /**
-     * Relación: Un grupo tiene muchos miembros (usuarios)
+     * Relación: Un grupo tiene un vehículo asignado
+     */
+    public function vehiculo()
+    {
+        return $this->belongsTo(Vehiculo::class, 'vehiculo_id');
+    }
+
+    /**
+     * Relación: Un móvil tiene muchos empleados (2-3 empleados)
+     */
+    public function empleados()
+    {
+        return $this->belongsToMany(Empleado::class, 'movil_empleado', 'movil_id', 'empleado_id')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Relación: Un grupo tiene muchos miembros (usuarios) - legacy
      */
     public function miembros()
     {
         return $this->belongsToMany(User::class, 'grupo_trabajo_user', 'grupo_trabajo_id', 'user_id')
                     ->withTimestamps();
+    }
+
+    /**
+     * Relación: Un móvil puede tener muchas tareas asignadas
+     */
+    public function tareas()
+    {
+        return $this->hasMany(Tarea::class, 'movil_id');
     }
 
     /**
@@ -86,19 +126,19 @@ class GrupoTrabajo extends Model
     }
 
     /**
-     * Scope para filtrar por especialidad
+     * Scope para filtrar por skill
      */
-    public function scopeConEspecialidad($query, $especialidad)
+    public function scopeConSkill($query, $skill)
     {
-        return $query->where('especialidad', $especialidad);
+        return $query->where('skill', $skill);
     }
 
     /**
-     * Accessor para obtener la especialidad formateada
+     * Accessor para obtener el skill formateado
      */
-    public function getEspecialidadFormateadaAttribute()
+    public function getSkillFormateadoAttribute()
     {
-        return self::ESPECIALIDADES[$this->especialidad] ?? $this->especialidad;
+        return self::SKILLS[$this->skill] ?? $this->skill;
     }
 
     /**
@@ -123,7 +163,7 @@ class GrupoTrabajo extends Model
     public function getOrdenesActivasAttribute()
     {
         return $this->ordenesAsignadas()
-                    ->whereIn('estado', ['pendiente', 'en_proceso', 'esperando_repuestos'])
+                    ->whereIn('estado', ['nueva', 'vista', 'en_proceso'])
                     ->count();
     }
 
@@ -167,10 +207,10 @@ class GrupoTrabajo extends Model
     public function getEstadisticas()
     {
         return [
-            'total_miembros' => $this->numero_miembros,
-            'ordenes_activas' => $this->ordenes_activas,
-            'ordenes_completadas' => $this->ordenesAsignadas()->where('estado', 'completado')->count(),
-            'ordenes_entregadas' => $this->ordenesAsignadas()->where('estado', 'entregado')->count(),
+            'total_miembros'      => $this->numero_miembros,
+            'ordenes_activas'     => $this->ordenes_activas,
+            'ordenes_completadas' => $this->ordenesAsignadas()->where('estado', 'terminada')->count(),
+            'ordenes_fallidas'    => $this->ordenesAsignadas()->where('estado', 'no_terminada')->count(),
         ];
     }
 }

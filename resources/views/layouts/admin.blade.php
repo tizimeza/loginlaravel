@@ -52,16 +52,19 @@
         <a href="{{route('tareas.index')}}" class="nav-link">Tareas</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="{{route('vehiculos.index')}}" class="nav-link">Vehículos</a>
+        <a href="{{route('vehiculos.index')}}" class="nav-link">Furgonetas</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="{{route('ordenes_trabajo.index')}}" class="nav-link">Órdenes de Trabajo</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="{{route('grupos_trabajo.index')}}" class="nav-link">Grupos</a>
+        <a href="{{route('grupos_trabajo.index')}}" class="nav-link">Equipos de Trabajo</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
         <a href="{{route('stock.index')}}" class="nav-link">Stock</a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="{{route('clientes.index')}}" class="nav-link">Clientes</a>
       </li>
     </ul>
 
@@ -228,7 +231,7 @@
           </li>
           <li class="nav-item">
             <a href="{{route('vehiculos.index')}}" class="nav-link {{request()->routeIs('vehiculos.*') ? 'active' : ''}}">
-              <i class="nav-icon fas fa-car"></i>
+              <i class="nav-icon fas fa-truck"></i>
               <p>Vehículos</p>
             </a>
           </li>
@@ -240,14 +243,20 @@
           </li>
           <li class="nav-item">
             <a href="{{route('grupos_trabajo.index')}}" class="nav-link {{request()->routeIs('grupos_trabajo.*') ? 'active' : ''}}">
-              <i class="nav-icon fas fa-users"></i>
-              <p>Grupos de Trabajo</p>
+              <i class="nav-icon fas fa-truck"></i>
+              <p>Equipos de Trabajo</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="{{route('stock.index')}}" class="nav-link {{request()->routeIs('stock.*') ? 'active' : ''}}">
               <i class="nav-icon fas fa-boxes"></i>
               <p>Stock</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{route('clientes.index')}}" class="nav-link {{request()->routeIs('clientes.*') ? 'active' : ''}}">
+              <i class="nav-icon fas fa-address-book"></i>
+              <p>Clientes</p>
             </a>
           </li>
           <li class="nav-header">CONFIGURACIÓN</li>

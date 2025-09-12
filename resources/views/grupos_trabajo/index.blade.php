@@ -1,10 +1,10 @@
 @extends('layouts.admin')
 
-@section('title', 'Gestión de Grupos de Trabajo')
+@section('title', 'Equipos de Trabajo de TecnoServi')
 
 @section('breadcrumb')
 <li class="breadcrumb-item"><a href="{{route('home')}}">Inicio</a></li>
-<li class="breadcrumb-item active">Grupos de Trabajo</li>
+<li class="breadcrumb-item active">Equipos de Trabajo</li>
 @endsection
 
 @section('content')
@@ -13,12 +13,12 @@
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">
-          <i class="fas fa-users mr-1"></i>
-          Lista de Grupos de Trabajo
+          <i class="fas fa-truck mr-1"></i>
+          Equipos de Trabajo de TecnoServi
         </h3>
         <div class="card-tools">
           <a href="{{ route('grupos_trabajo.create') }}" class="btn btn-primary btn-sm">
-            <i class="fas fa-plus"></i> Nuevo Grupo
+            <i class="fas fa-plus"></i> Nuevo Equipo
           </a>
         </div>
       </div>

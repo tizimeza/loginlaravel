@@ -24,9 +24,13 @@ class Tarea extends Model
     protected $fillable = [
         'nombre',
         'titulo', 
+        'tipo',
+        'estado',
         'completada',
         'user_id',
-        'orden_trabajo_id'
+        'empleado_id',
+        'orden_trabajo_id',
+        'movil_id'
     ];
 
     /**
@@ -38,19 +42,54 @@ class Tarea extends Model
         'completada' => 'boolean',
     ];
 
+    // Estados de la tarea
+    const ESTADOS = [
+        'pendiente'  => 'Pendiente',
+        'asignada'   => 'Asignada',
+        'en_proceso' => 'En Proceso',
+        'completada' => 'Completada',
+        'cancelada'  => 'Cancelada'
+    ];
+
+    // Tipos de tarea
+    const TIPOS = [
+        'instalacion'   => 'Instalación',
+        'reconexion'    => 'Reconexión',
+        'service'       => 'Service/Mantenimiento',
+        'desconexion'   => 'Desconexión',
+        'mantenimiento' => 'Mantenimiento',
+        'soporte'       => 'Soporte Técnico'
+    ];
+
     /**
-     * Get the user that owns the task.
+     * Relación: Una tarea pertenece a un empleado
      */
-    public function user()
+    public function empleado()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Empleado::class, 'empleado_id');
     }
 
     /**
-     * Get the orden de trabajo that owns the task.
+     * Relación: Una tarea pertenece a un móvil (1:1)
+     */
+    public function movil()
+    {
+        return $this->belongsTo(GrupoTrabajo::class, 'movil_id');
+    }
+
+    /**
+     * Relación: Una tarea pertenece a una orden de trabajo
      */
     public function ordenTrabajo()
     {
         return $this->belongsTo(OrdenTrabajo::class, 'orden_trabajo_id');
+    }
+
+    /**
+     * Get the user that owns the task (legacy).
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

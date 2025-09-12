@@ -5,7 +5,7 @@
 @section('breadcrumb')
 <li class="breadcrumb-item"><a href="{{route('home')}}">Inicio</a></li>
 <li class="breadcrumb-item"><a href="{{route('ordenes_trabajo.index')}}">Órdenes de Trabajo</a></li>
-<li class="breadcrumb-item"><a href="{{route('ordenes_trabajo.show', $ordenTrabajo)}}">Orden #{{ $ordenTrabajo->numero_orden }}</a></li>
+<li class="breadcrumb-item"><a href="{{route('ordenes_trabajo.show', $ordenTrabajo->id)}}">Orden #{{ $ordenTrabajo->numero_orden }}</a></li>
 <li class="breadcrumb-item active">Editar</li>
 @endsection
 
@@ -19,7 +19,7 @@
           Editar Orden de Trabajo #{{ $ordenTrabajo->numero_orden }}
         </h3>
         <div class="card-tools">
-          <a href="{{ route('ordenes_trabajo.show', $ordenTrabajo) }}" class="btn btn-info btn-sm">
+          <a href="{{ route('ordenes_trabajo.show', $ordenTrabajo->id) }}" class="btn btn-info btn-sm">
             <i class="fas fa-eye"></i> Ver
           </a>
           <a href="{{ route('ordenes_trabajo.index') }}" class="btn btn-secondary btn-sm">
@@ -28,7 +28,7 @@
         </div>
       </div>
 
-      <form action="{{ route('ordenes_trabajo.update', $ordenTrabajo) }}" method="POST">
+      <form action="{{ route('ordenes_trabajo.update', $ordenTrabajo->id) }}" method="POST">
         @csrf
         @method('PUT')
         <div class="card-body">
@@ -291,7 +291,7 @@
           <button type="submit" class="btn btn-primary">
             <i class="fas fa-save"></i> Actualizar Orden de Trabajo
           </button>
-          <a href="{{ route('ordenes_trabajo.show', $ordenTrabajo) }}" class="btn btn-info">
+          <a href="{{ route('ordenes_trabajo.show', $ordenTrabajo->id) }}" class="btn btn-info">
             <i class="fas fa-eye"></i> Ver Orden
           </a>
           <a href="{{ route('ordenes_trabajo.index') }}" class="btn btn-secondary">

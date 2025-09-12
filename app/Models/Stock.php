@@ -33,25 +33,23 @@ class Stock extends Model
         'cantidad_actual' => 'integer',
         'cantidad_minima' => 'integer',
         'cantidad_maxima' => 'integer',
-        'precio_compra' => 'decimal:2',
-        'precio_venta' => 'decimal:2',
-        'activo' => 'boolean',
+        'precio_compra'   => 'decimal:2',
+        'precio_venta'    => 'decimal:2',
+        'activo'          => 'boolean',
     ];
 
-    // Categorías disponibles
+    // Categorías disponibles para TecnoServi
     const CATEGORIAS = [
-        'repuestos' => 'Repuestos',
-        'aceites' => 'Aceites y Lubricantes',
-        'filtros' => 'Filtros',
-        'neumaticos' => 'Neumáticos',
-        'baterias' => 'Baterías',
-        'frenos' => 'Sistema de Frenos',
-        'suspension' => 'Suspensión',
-        'electricidad' => 'Componentes Eléctricos',
-        'carroceria' => 'Carrocería',
-        'herramientas' => 'Herramientas',
-        'consumibles' => 'Consumibles',
-        'otros' => 'Otros'
+        'routers'       => 'Routers Wi-Fi',
+        'modems'        => 'Módems',
+        'cables'        => 'Cables Coaxiales / UTP',
+        'conectores'    => 'Conectores y Adaptadores',
+        'precintos'     => 'Precintos y Sujetadores',
+        'grampas'       => 'Grampas',
+        'cajas'         => 'Cajas de Conexión',
+        'herramientas'  => 'Herramientas de Instalación',
+        'antenas'       => 'Antenas y Equipos Externos',
+        'otros'         => 'Otros Materiales'
     ];
 
     /**
@@ -163,10 +161,10 @@ class Stock extends Model
     public function agregarStock($cantidad, $motivo = null)
     {
         $this->increment('cantidad_actual', $cantidad);
-        
+
         // Aquí podrías registrar el movimiento en una tabla de historial
         // MovimientoStock::create([...]);
-        
+
         return $this;
     }
 
@@ -177,13 +175,13 @@ class Stock extends Model
     {
         if ($this->cantidad_actual >= $cantidad) {
             $this->decrement('cantidad_actual', $cantidad);
-            
+
             // Aquí podrías registrar el movimiento en una tabla de historial
             // MovimientoStock::create([...]);
-            
+
             return true;
         }
-        
+
         return false; // No hay suficiente stock
     }
 
@@ -209,11 +207,12 @@ class Stock extends Model
     public static function getEstadisticas()
     {
         return [
-            'total_productos' => self::activos()->count(),
-            'productos_sin_stock' => self::sinStock()->activos()->count(),
-            'productos_stock_bajo' => self::stockBajo()->activos()->count(),
-            'valor_total_inventario' => self::activos()->sum(\DB::raw('cantidad_actual * precio_compra')),
-            'productos_inactivos' => self::where('activo', false)->count(),
+            'total_productos'         => self::activos()->count(),
+            'productos_sin_stock'     => self::sinStock()->activos()->count(),
+            'productos_stock_bajo'    => self::stockBajo()->activos()->count(),
+            'valor_total_inventario'  => self::activos()->sum(\DB::raw('cantidad_actual * precio_compra')),
+            'productos_inactivos'     => self::where('activo', false)->count(),
         ];
     }
 }
+

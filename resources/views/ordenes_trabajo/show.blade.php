@@ -18,7 +18,7 @@
           Orden de Trabajo #{{ $ordenTrabajo->numero_orden }}
         </h3>
         <div class="card-tools">
-          <a href="{{ route('ordenes_trabajo.edit', $ordenTrabajo) }}" class="btn btn-warning btn-sm">
+          <a href="{{ route('ordenes_trabajo.edit', $ordenTrabajo->id) }}" class="btn btn-warning btn-sm">
             <i class="fas fa-edit"></i> Editar
           </a>
           <a href="{{ route('ordenes_trabajo.index') }}" class="btn btn-secondary btn-sm">
@@ -52,7 +52,7 @@
                     <div class="dropdown-menu">
                       @foreach(\App\Models\OrdenTrabajo::ESTADOS as $key => $estado)
                         @if($key !== $ordenTrabajo->estado)
-                          <form action="{{ route('ordenes_trabajo.cambiar_estado', $ordenTrabajo) }}" method="POST" style="display: inline;">
+                          <form action="{{ route('ordenes_trabajo.cambiar_estado', $ordenTrabajo->id) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('PATCH')
                             <input type="hidden" name="estado" value="{{ $key }}">
@@ -300,7 +300,7 @@
               </div>
               <div class="card-body">
                 <div class="d-grid gap-2">
-                  <a href="{{ route('ordenes_trabajo.edit', $ordenTrabajo) }}" class="btn btn-warning btn-block">
+                  <a href="{{ route('ordenes_trabajo.edit', $ordenTrabajo->id) }}" class="btn btn-warning btn-block">
                     <i class="fas fa-edit"></i> Editar Orden
                   </a>
                   
@@ -317,7 +317,7 @@
                   
                   <hr>
                   
-                  <form action="{{ route('ordenes_trabajo.destroy', $ordenTrabajo) }}" method="POST">
+                  <form action="{{ route('ordenes_trabajo.destroy', $ordenTrabajo->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger btn-block" 

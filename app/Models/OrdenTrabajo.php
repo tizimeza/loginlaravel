@@ -13,55 +13,77 @@ class OrdenTrabajo extends Model
 
     protected $fillable = [
         'numero_orden',
-        'vehiculo_id',
-        'cliente_nombre',
+        'solicitud_id',
+        'tipo_servicio',
+        'cliente_id',
+        'direccion',
         'cliente_telefono',
         'cliente_email',
-        'descripcion_problema',
+        'descripcion_trabajo',
         'fecha_ingreso',
-        'fecha_estimada_entrega',
-        'fecha_entrega_real',
+        'fecha_asignacion',
+        'fecha_finalizacion',
         'estado',
         'prioridad',
-        'costo_estimado',
-        'costo_final',
         'observaciones',
+        'motivo_no_terminada',
+        'es_cliente_premium',
+        'coordenadas_gps',
+        'telefono_contacto',
+        'horario_preferido',
         'user_id', // Técnico asignado
         'grupo_trabajo_id' // Grupo asignado
     ];
 
     protected $casts = [
-        'fecha_ingreso' => 'datetime',
+        'fecha_ingreso'       => 'datetime',
+        'fecha_asignacion'    => 'datetime',
+        'fecha_finalizacion'  => 'datetime',
         'fecha_estimada_entrega' => 'datetime',
-        'fecha_entrega_real' => 'datetime',
-        'costo_estimado' => 'decimal:2',
-        'costo_final' => 'decimal:2',
+        'fecha_entrega_real'  => 'datetime',
+        'created_at'          => 'datetime',
+        'updated_at'          => 'datetime',
     ];
 
-    // Estados posibles
+    // Estados posibles según workflow de TecnoServi
     const ESTADOS = [
-        'pendiente' => 'Pendiente',
-        'en_proceso' => 'En Proceso',
-        'esperando_repuestos' => 'Esperando Repuestos',
-        'completado' => 'Completado',
-        'entregado' => 'Entregado',
-        'cancelado' => 'Cancelado'
+        'nueva'        => 'Nueva',
+        'vista'        => 'Vista',
+        'en_proceso'   => 'En Proceso',
+        'terminada'    => 'Terminada',
+        'no_terminada' => 'No Terminada'
     ];
 
     // Prioridades
     const PRIORIDADES = [
-        'baja' => 'Baja',
-        'media' => 'Media',
-        'alta' => 'Alta',
-        'urgente' => 'Urgente'
+        'normal'   => 'Normal',
+        'alta'     => 'Alta',
+        'critica'  => 'Crítica (Cliente Premium)'
+    ];
+
+    // Tipos de servicio de TecnoServi
+    const TIPOS_SERVICIO = [
+        'instalacion'   => 'Instalación',
+        'reconexion'    => 'Reconexión',
+        'service'       => 'Service/Mantenimiento',
+        'desconexion'   => 'Desconexión',
+        'mantenimiento' => 'Mantenimiento Preventivo'
     ];
 
     /**
-     * Relación: Una orden de trabajo pertenece a un vehículo
+     * Relación: Una orden de trabajo se genera a partir de una solicitud (1:1)
      */
-    public function vehiculo()
+    public function solicitud()
     {
-        return $this->belongsTo(Vehiculo::class);
+        return $this->belongsTo(Solicitud::class, 'solicitud_id');
+    }
+
+    /**
+     * Relación: Una orden de trabajo pertenece a un cliente
+     */
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'cliente_id');
     }
 
     /**
@@ -73,19 +95,19 @@ class OrdenTrabajo extends Model
     }
 
     /**
-     * Relación: Una orden de trabajo puede tener muchas tareas
-     */
-    public function tareas()
-    {
-        return $this->hasMany(Tarea::class, 'orden_trabajo_id');
-    }
-
-    /**
      * Relación: Una orden de trabajo pertenece a un grupo de trabajo
      */
     public function grupoTrabajo()
     {
         return $this->belongsTo(GrupoTrabajo::class, 'grupo_trabajo_id');
+    }
+
+    /**
+     * Relación: Una orden puede tener muchas tareas asociadas
+     */
+    public function tareas()
+    {
+        return $this->hasMany(Tarea::class, 'orden_trabajo_id');
     }
 
     /**
@@ -121,55 +143,57 @@ class OrdenTrabajo extends Model
     }
 
     /**
-     * Accessor para determinar si la orden está atrasada
+     * Accessor para obtener el tipo de servicio formateado
      */
-    public function getEsAtrasadaAttribute()
+    public function getTipoServicioFormateadoAttribute()
     {
-        if (!$this->fecha_estimada_entrega || $this->estado === 'entregado') {
-            return false;
-        }
-        
-        return now() > $this->fecha_estimada_entrega;
+        return self::TIPOS_SERVICIO[$this->tipo_servicio] ?? $this->tipo_servicio;
     }
 
     /**
-     * Accessor para obtener el color del estado
+     * Accessor para obtener color de estado en dashboard
      */
     public function getColorEstadoAttribute()
     {
-        return $this->getColorEstado($this->estado);
-    }
-
-    /**
-     * Método estático para obtener el color de un estado específico
-     */
-    public static function getColorEstado($estado)
-    {
         $colores = [
-            'pendiente' => 'secondary',
-            'en_proceso' => 'info',
-            'esperando_repuestos' => 'warning',
-            'completado' => 'success',
-            'entregado' => 'primary',
-            'cancelado' => 'danger'
+            'nueva'        => 'secondary',
+            'vista'        => 'info',
+            'en_proceso'   => 'warning',
+            'terminada'    => 'success',
+            'no_terminada' => 'danger',
         ];
 
-        return $colores[$estado] ?? 'secondary';
+        return $colores[$this->estado] ?? 'secondary';
     }
 
     /**
-     * Accessor para obtener el color de la prioridad
+     * Accessor para obtener color de la prioridad
      */
     public function getColorPrioridadAttribute()
     {
         $colores = [
-            'baja' => 'success',
-            'media' => 'info',
-            'alta' => 'warning',
-            'urgente' => 'danger'
+            'normal'  => 'success',
+            'alta'    => 'warning',
+            'critica' => 'danger'
         ];
 
         return $colores[$this->prioridad] ?? 'secondary';
+    }
+
+    /**
+     * Método estático para obtener color de estado
+     */
+    public static function getColorEstado($estado)
+    {
+        $colores = [
+            'nueva'        => 'secondary',
+            'vista'        => 'info',
+            'en_proceso'   => 'warning',
+            'terminada'    => 'success',
+            'no_terminada' => 'danger',
+        ];
+
+        return $colores[$estado] ?? 'secondary';
     }
 
     /**

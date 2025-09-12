@@ -16,25 +16,77 @@ class VehiculoSeeder extends Seeder
      */
     public function run()
     {
-        $colores = ['Blanco', 'Negro', 'Gris', 'Rojo', 'Azul', 'Verde', 'Amarillo', 'Plata', 'Dorado', 'Marrón'];
-        $patentes = [
-            'ABC123', 'XYZ789', 'DEF456', 'GHI012', 'JKL345',
-            'MNO678', 'PQR901', 'STU234', 'VWX567', 'YZA890',
-            'BCD123', 'EFG456', 'HIJ789', 'KLM012', 'NOP345'
-        ];
-        
-        $modelos = Modelo::all();
-        
-        if ($modelos->count() > 0) {
-            foreach ($patentes as $index => $patente) {
-                Vehiculo::firstOrCreate([
-                    'patente' => $patente
-                ], [
-                    'color' => $colores[array_rand($colores)],
-                    'anio' => rand(2015, 2024),
-                    'modelo_id' => $modelos->random()->id
-                ]);
-            }
+        // Obtener un modelo existente o crear uno por defecto
+        $modelo = Modelo::first();
+        if (!$modelo) {
+            $modelo = Modelo::create([
+                'nombre' => 'Modelo Genérico',
+                'marca_id' => 1
+            ]);
         }
+
+        // Crear las 3 furgonetas específicas de TecnoServi
+        $furgonetas = [
+            [
+                'patente' => 'ABC 123',
+                'tipo_vehiculo' => 'transit',
+                'marca' => 'Ford',
+                'modelo' => 'Transit',
+                'modelo_id' => $modelo->id,
+                'color' => 'Blanco',
+                'anio' => 2022,
+                'capacidad_carga' => 1500,
+                'combustible' => 'Diesel',
+                'fecha_vencimiento_vtv' => now()->addMonths(8),
+                'fecha_cambio_neumaticos' => now()->addMonths(6),
+                'estado' => 'disponible',
+                'kilometraje' => 45000,
+                'observaciones' => 'Furgoneta principal para instalaciones grandes'
+            ],
+            [
+                'patente' => 'XY 456 Z',
+                'tipo_vehiculo' => 'kangoo',
+                'marca' => 'Renault',
+                'modelo' => 'Kangoo',
+                'modelo_id' => $modelo->id,
+                'color' => 'Azul',
+                'anio' => 2021,
+                'capacidad_carga' => 800,
+                'combustible' => 'Diesel',
+                'fecha_vencimiento_vtv' => now()->addMonths(12),
+                'fecha_cambio_neumaticos' => now()->addMonths(4),
+                'estado' => 'disponible',
+                'kilometraje' => 62000,
+                'observaciones' => 'Ideal para trabajos en zonas urbanas estrechas'
+            ],
+            [
+                'patente' => 'DE 789 F',
+                'tipo_vehiculo' => 'partner',
+                'marca' => 'Peugeot',
+                'modelo' => 'Partner',
+                'modelo_id' => $modelo->id,
+                'color' => 'Gris',
+                'anio' => 2023,
+                'capacidad_carga' => 1000,
+                'combustible' => 'Diesel',
+                'fecha_vencimiento_vtv' => now()->addMonths(15),
+                'fecha_cambio_neumaticos' => now()->addMonths(10),
+                'estado' => 'disponible',
+                'kilometraje' => 18000,
+                'observaciones' => 'Furgoneta nueva, excelente estado'
+            ]
+        ];
+
+        foreach ($furgonetas as $furgoneta) {
+            Vehiculo::firstOrCreate(
+                ['patente' => $furgoneta['patente']],
+                $furgoneta
+            );
+        }
+
+        $this->command->info('✅ 3 furgonetas de TecnoServi creadas exitosamente:');
+        $this->command->info('🚐 Ford Transit - ABC 123');
+        $this->command->info('🚐 Renault Kangoo - XY 456 Z');
+        $this->command->info('🚐 Peugeot Partner - DE 789 F');
     }
 }

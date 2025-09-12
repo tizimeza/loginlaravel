@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\OrdenTrabajo;
 use App\Models\Vehiculo;
 use App\Models\User;
+use App\Models\Cliente;
+use App\Models\GrupoTrabajo;
 use App\Http\Requests\StoreOrdenTrabajoRequest;
 use App\Http\Requests\UpdateOrdenTrabajoRequest;
 use Illuminate\Http\Request;
@@ -18,7 +20,7 @@ class OrdenTrabajoController extends Controller
      */
     public function index(Request $request)
     {
-        $query = OrdenTrabajo::with(['vehiculo.modelo.marca', 'tecnico']);
+        $query = OrdenTrabajo::with(['cliente', 'grupoTrabajo', 'tecnico']);
 
         // Filtros
         if ($request->filled('estado')) {
@@ -29,12 +31,19 @@ class OrdenTrabajoController extends Controller
             $query->where('prioridad', $request->prioridad);
         }
 
+        if ($request->filled('tipo_servicio')) {
+            $query->where('tipo_servicio', $request->tipo_servicio);
+        }
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
                 $q->where('numero_orden', 'like', "%{$search}%")
-                  ->orWhere('cliente_nombre', 'like', "%{$search}%")
-                  ->orWhere('descripcion_problema', 'like', "%{$search}%");
+                  ->orWhere('direccion', 'like', "%{$search}%")
+                  ->orWhere('descripcion_trabajo', 'like', "%{$search}%")
+                  ->orWhereHas('cliente', function($q) use ($search) {
+                      $q->where('nombre', 'like', "%{$search}%");
+                  });
             });
         }
 
@@ -44,8 +53,9 @@ class OrdenTrabajoController extends Controller
         // Datos para filtros
         $estados = OrdenTrabajo::ESTADOS;
         $prioridades = OrdenTrabajo::PRIORIDADES;
+        $tiposServicio = OrdenTrabajo::TIPOS_SERVICIO;
 
-        return view('ordenes_trabajo.index', compact('ordenes', 'estados', 'prioridades'));
+        return view('ordenes_trabajo.index', compact('ordenes', 'estados', 'prioridades', 'tiposServicio'));
     }
 
     /**
@@ -55,12 +65,15 @@ class OrdenTrabajoController extends Controller
      */
     public function create()
     {
-        $vehiculos = Vehiculo::with('modelo.marca')->get();
+        $clientes = Cliente::activos()->get();
+        $gruposTrabajo = GrupoTrabajo::where('activo', true)->get();
         $tecnicos = User::all();
+        $vehiculos = Vehiculo::all();
         $estados = OrdenTrabajo::ESTADOS;
         $prioridades = OrdenTrabajo::PRIORIDADES;
+        $tiposServicio = OrdenTrabajo::TIPOS_SERVICIO;
 
-        return view('ordenes_trabajo.create', compact('vehiculos', 'tecnicos', 'estados', 'prioridades'));
+        return view('ordenes_trabajo.create', compact('clientes', 'gruposTrabajo', 'tecnicos', 'vehiculos', 'estados', 'prioridades', 'tiposServicio'));
     }
 
     /**
@@ -73,10 +86,14 @@ class OrdenTrabajoController extends Controller
     {
         $data = $request->validated();
         
-        // Generar número de orden automático si no se proporcionó
-        if (empty($data['numero_orden'])) {
-            $data['numero_orden'] = OrdenTrabajo::generarNumeroOrden();
-        }
+        // Generar número de orden automático
+        $data['numero_orden'] = OrdenTrabajo::generarNumeroOrden();
+        
+        // Establecer fecha de ingreso
+        $data['fecha_ingreso'] = now();
+        
+        // Establecer estado inicial
+        $data['estado'] = 'nueva';
 
         OrdenTrabajo::create($data);
 
@@ -92,7 +109,7 @@ class OrdenTrabajoController extends Controller
      */
     public function show(OrdenTrabajo $ordenTrabajo)
     {
-        $ordenTrabajo->load(['vehiculo.modelo.marca', 'tecnico', 'tareas']);
+        $ordenTrabajo->load(['cliente', 'grupoTrabajo', 'tecnico', 'tareas']);
 
         return view('ordenes_trabajo.show', compact('ordenTrabajo'));
     }
@@ -105,12 +122,15 @@ class OrdenTrabajoController extends Controller
      */
     public function edit(OrdenTrabajo $ordenTrabajo)
     {
-        $vehiculos = Vehiculo::with('modelo.marca')->get();
+        $clientes = Cliente::activos()->get();
+        $gruposTrabajo = GrupoTrabajo::where('activo', true)->get();
         $tecnicos = User::all();
+        $vehiculos = Vehiculo::all();
         $estados = OrdenTrabajo::ESTADOS;
         $prioridades = OrdenTrabajo::PRIORIDADES;
+        $tiposServicio = OrdenTrabajo::TIPOS_SERVICIO;
 
-        return view('ordenes_trabajo.edit', compact('ordenTrabajo', 'vehiculos', 'tecnicos', 'estados', 'prioridades'));
+        return view('ordenes_trabajo.edit', compact('ordenTrabajo', 'clientes', 'gruposTrabajo', 'tecnicos', 'vehiculos', 'estados', 'prioridades', 'tiposServicio'));
     }
 
     /**
@@ -154,13 +174,30 @@ class OrdenTrabajoController extends Controller
     public function cambiarEstado(Request $request, OrdenTrabajo $ordenTrabajo)
     {
         $request->validate([
-            'estado' => 'required|in:' . implode(',', array_keys(OrdenTrabajo::ESTADOS))
+            'estado' => 'required|in:' . implode(',', array_keys(OrdenTrabajo::ESTADOS)),
+            'motivo_no_terminada' => 'nullable|string|max:500'
         ]);
 
-        $ordenTrabajo->update([
-            'estado' => $request->estado,
-            'fecha_entrega_real' => $request->estado === 'entregado' ? now() : $ordenTrabajo->fecha_entrega_real
-        ]);
+        $data = ['estado' => $request->estado];
+
+        // Actualizar fechas según el estado
+        switch ($request->estado) {
+            case 'vista':
+                $data['fecha_asignacion'] = now();
+                break;
+            case 'en_proceso':
+                $data['fecha_asignacion'] = $ordenTrabajo->fecha_asignacion ?: now();
+                break;
+            case 'terminada':
+            case 'no_terminada':
+                $data['fecha_finalizacion'] = now();
+                if ($request->estado === 'no_terminada' && $request->motivo_no_terminada) {
+                    $data['motivo_no_terminada'] = $request->motivo_no_terminada;
+                }
+                break;
+        }
+
+        $ordenTrabajo->update($data);
 
         return back()->with('success', 'Estado actualizado exitosamente.');
     }

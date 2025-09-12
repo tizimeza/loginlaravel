@@ -6,6 +6,7 @@ use App\Http\Controllers\VehiculoController; // <-- 1. IMPORTAR EL CONTROLADOR
 use App\Http\Controllers\OrdenTrabajoController;
 use App\Http\Controllers\GrupoTrabajoController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\ClienteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,23 +33,27 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/tareas/{id}', [TareaController::class, 'destroy'])->name('tareas.destroy');
 
     // <-- 2. AÑADIR LA RUTA DE RECURSO PARA VEHÍCULOS AQUÍ
-    Route::resource('vehiculos', VehiculoController::class);
+    Route::resource('vehiculos', VehiculoController::class)->parameters(['vehiculos' => 'vehiculo']);
     
     // Rutas para Órdenes de Trabajo
-    Route::resource('ordenes_trabajo', OrdenTrabajoController::class);
+    Route::resource('ordenes_trabajo', OrdenTrabajoController::class)->parameters(['ordenes_trabajo' => 'ordenTrabajo']);
     Route::patch('ordenes_trabajo/{ordenTrabajo}/cambiar_estado', [OrdenTrabajoController::class, 'cambiarEstado'])->name('ordenes_trabajo.cambiar_estado');
     
     // Rutas para Grupos de Trabajo
-    Route::resource('grupos_trabajo', GrupoTrabajoController::class);
+    Route::resource('grupos_trabajo', GrupoTrabajoController::class)->parameters(['grupos_trabajo' => 'grupoTrabajo']);
     Route::patch('grupos_trabajo/{grupoTrabajo}/toggle_activo', [GrupoTrabajoController::class, 'toggleActivo'])->name('grupos_trabajo.toggle_activo');
     Route::post('grupos_trabajo/{grupoTrabajo}/agregar_miembro', [GrupoTrabajoController::class, 'agregarMiembro'])->name('grupos_trabajo.agregar_miembro');
     Route::delete('grupos_trabajo/{grupoTrabajo}/remover_miembro/{user}', [GrupoTrabajoController::class, 'removerMiembro'])->name('grupos_trabajo.remover_miembro');
     
     // Rutas para Stock
-    Route::resource('stock', StockController::class);
+    Route::resource('stock', StockController::class)->parameters(['stock' => 'stock']);
     Route::patch('stock/{stock}/ajustar_stock', [StockController::class, 'ajustarStock'])->name('stock.ajustar_stock');
     Route::patch('stock/{stock}/toggle_activo', [StockController::class, 'toggleActivo'])->name('stock.toggle_activo');
     Route::get('stock-bajo', [StockController::class, 'stockBajo'])->name('stock.stock_bajo');
+    
+    // Rutas para Clientes
+    Route::resource('clientes', ClienteController::class)->parameters(['clientes' => 'cliente']);
+    Route::patch('clientes/{cliente}/toggle_activo', [ClienteController::class, 'toggleActivo'])->name('clientes.toggle_activo');
 });
 
 Auth::routes();

@@ -1,20 +1,68 @@
 @extends('layouts.admin')
 
-@section('title', 'Gestión de Vehículos')
+@section('title', 'Furgonetas TecnoServi')
 
 @section('breadcrumb')
 <li class="breadcrumb-item"><a href="{{route('home')}}">Inicio</a></li>
-<li class="breadcrumb-item active">Vehículos</li>
+<li class="breadcrumb-item active">Furgonetas</li>
 @endsection
 
 @section('content')
+<!-- Resumen de Furgonetas -->
+<div class="row mb-4">
+  <div class="col-lg-3 col-6">
+    <div class="small-box bg-success">
+      <div class="inner">
+        <h3>{{ $vehiculos->where('estado', 'disponible')->count() }}</h3>
+        <p>Disponibles</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-truck"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-6">
+    <div class="small-box bg-info">
+      <div class="inner">
+        <h3>{{ $vehiculos->where('estado', 'en_uso')->count() }}</h3>
+        <p>En Uso</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-truck-loading"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-6">
+    <div class="small-box bg-warning">
+      <div class="inner">
+        <h3>{{ $vehiculos->where('estado', 'mantenimiento')->count() }}</h3>
+        <p>Mantenimiento</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-wrench"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-6">
+    <div class="small-box bg-danger">
+      <div class="inner">
+        <h3>{{ $vehiculos->where('estado', 'fuera_servicio')->count() }}</h3>
+        <p>Fuera de Servicio</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-times-circle"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="row">
   <div class="col-12">
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">
-          <i class="fas fa-car mr-1"></i>
-          Lista de Vehículos
+          <i class="fas fa-truck mr-1"></i>
+          Furgonetas de TecnoServi
         </h3>
         <div class="card-tools">
           <a href="{{ route('vehiculos.create') }}" class="btn btn-primary btn-sm">
@@ -37,55 +85,65 @@
             <table id="vehiculosTable" class="table table-bordered table-striped">
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Imagen</th>
                   <th>Patente</th>
-                  <th>Marca</th>
-                  <th>Modelo</th>
-                  <th>Color</th>
-                  <th>Año</th>
-                  <th>Fecha Registro</th>
+                  <th>Tipo</th>
+                  <th>Marca/Modelo</th>
+                  <th>Estado</th>
+                  <th>Capacidad</th>
+                  <th>Kilometraje</th>
+                  <th>VTV</th>
+                  <th>Alertas</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 @foreach($vehiculos as $vehiculo)
                 <tr>
-                  <td>{{ $vehiculo->id }}</td>
-                  <td>
-                    @if($vehiculo->imagen)
-                      <img src="{{ asset('storage/' . $vehiculo->imagen) }}" 
-                           alt="Imagen del vehículo" 
-                           class="img-thumbnail" 
-                           style="width: 50px; height: 50px; object-fit: cover;">
-                    @else
-                      <div class="text-center text-muted" style="width: 50px; height: 50px; line-height: 50px; background-color: #f8f9fa; border-radius: 4px;">
-                        <i class="fas fa-car"></i>
-                      </div>
-                    @endif
-                  </td>
                   <td>
                     <strong>{{ $vehiculo->patente }}</strong>
+                    <br>
+                    <small class="text-muted">{{ $vehiculo->anio }} - {{ $vehiculo->color }}</small>
                   </td>
                   <td>
-                    @if($vehiculo->modelo && $vehiculo->modelo->marca)
-                      {{ $vehiculo->modelo->marca->nombre }}
+                    <span class="badge badge-primary">{{ $vehiculo->tipo_vehiculo_formateado }}</span>
+                  </td>
+                  <td>
+                    <strong>{{ $vehiculo->marca }}</strong>
+                    <br>
+                    <small class="text-muted">{{ $vehiculo->modelo }}</small>
+                  </td>
+                  <td>
+                    <span class="badge badge-{{ $vehiculo->color_estado }}">
+                      {{ $vehiculo->estado_formateado }}
+                    </span>
+                  </td>
+                  <td>
+                    {{ number_format($vehiculo->capacidad_carga) }} kg
+                    <br>
+                    <small class="text-muted">{{ $vehiculo->combustible }}</small>
+                  </td>
+                  <td>
+                    {{ number_format($vehiculo->kilometraje) }} km
+                  </td>
+                  <td>
+                    @if($vehiculo->fecha_vencimiento_vtv)
+                      {{ $vehiculo->fecha_vencimiento_vtv->format('m/Y') }}
+                      @if($vehiculo->necesitaVTV())
+                        <br><span class="badge badge-warning">Próxima</span>
+                      @endif
                     @else
                       <span class="text-muted">N/A</span>
                     @endif
                   </td>
                   <td>
-                    @if($vehiculo->modelo)
-                      {{ $vehiculo->modelo->nombre }}
+                    @if(count($vehiculo->alertas) > 0)
+                      @foreach($vehiculo->alertas as $alerta)
+                        <span class="badge badge-warning">{{ $alerta }}</span><br>
+                      @endforeach
                     @else
-                      <span class="text-muted">N/A</span>
+                      <span class="text-success"><i class="fas fa-check"></i> OK</span>
                     @endif
                   </td>
-                  <td>
-                    <span class="badge badge-info">{{ $vehiculo->color }}</span>
-                  </td>
-                  <td>{{ $vehiculo->anio }}</td>
-                  <td>{{ $vehiculo->created_at->format('d/m/Y H:i') }}</td>
                   <td>
                     <div class="btn-group" role="group">
                       <a href="{{ route('vehiculos.show', $vehiculo) }}" class="btn btn-info btn-sm" title="Ver detalles">
