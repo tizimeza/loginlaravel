@@ -16,6 +16,7 @@ class OrdenTrabajo extends Model
         'solicitud_id',
         'tipo_servicio',
         'cliente_id',
+        'vehiculo_id',
         'direccion',
         'cliente_telefono',
         'cliente_email',
@@ -32,7 +33,8 @@ class OrdenTrabajo extends Model
         'telefono_contacto',
         'horario_preferido',
         'user_id', // Técnico asignado
-        'grupo_trabajo_id' // Grupo asignado
+        'grupo_trabajo_id', // Grupo asignado
+        'total' // Total de la orden
     ];
 
     protected $casts = [
@@ -43,6 +45,8 @@ class OrdenTrabajo extends Model
         'fecha_entrega_real'  => 'datetime',
         'created_at'          => 'datetime',
         'updated_at'          => 'datetime',
+        'total'               => 'decimal:2',
+        'es_cliente_premium'  => 'boolean',
     ];
 
     // Estados posibles según workflow de TecnoServi
