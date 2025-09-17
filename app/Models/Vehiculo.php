@@ -10,9 +10,9 @@ class Vehiculo extends Model
     use HasFactory;
 
     protected $fillable = [
-        'patente', 'tipo_vehiculo', 'marca', 'modelo', 'color', 'anio', 
-        'capacidad_carga', 'combustible', 'fecha_vencimiento_vtv', 
-        'fecha_cambio_neumaticos', 'servicios_pendientes', 'estado', 
+        'patente', 'tipo_vehiculo', 'marca', 'modelo_id', 'color', 'anio',
+        'capacidad_carga', 'combustible', 'fecha_vencimiento_vtv',
+        'fecha_cambio_neumaticos', 'servicios_pendientes', 'estado',
         'kilometraje', 'observaciones', 'imagen'
     ];
 

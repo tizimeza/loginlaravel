@@ -68,7 +68,7 @@ class OrdenTrabajoController extends Controller
         $clientes = Cliente::activos()->get();
         $gruposTrabajo = GrupoTrabajo::where('activo', true)->get();
         $tecnicos = User::all();
-        $vehiculos = Vehiculo::all();
+        $vehiculos = Vehiculo::with('modelo.marca')->get();
         $estados = OrdenTrabajo::ESTADOS;
         $prioridades = OrdenTrabajo::PRIORIDADES;
         $tiposServicio = OrdenTrabajo::TIPOS_SERVICIO;
@@ -125,7 +125,7 @@ class OrdenTrabajoController extends Controller
         $clientes = Cliente::activos()->get();
         $gruposTrabajo = GrupoTrabajo::where('activo', true)->get();
         $tecnicos = User::all();
-        $vehiculos = Vehiculo::all();
+        $vehiculos = Vehiculo::with('modelo.marca')->get();
         $estados = OrdenTrabajo::ESTADOS;
         $prioridades = OrdenTrabajo::PRIORIDADES;
         $tiposServicio = OrdenTrabajo::TIPOS_SERVICIO;

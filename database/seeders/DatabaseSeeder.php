@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ClienteSeeder::class);
         $this->call(GrupoTrabajoSeeder::class);
         $this->call(OrdenTrabajoSeeder::class);
+        $this->call(StockTecnoServiSeeder::class);
 
         // \App\Models\User::factory(10)->create();
 
