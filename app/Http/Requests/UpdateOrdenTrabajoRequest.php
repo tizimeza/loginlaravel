@@ -28,8 +28,8 @@ class UpdateOrdenTrabajoRequest extends FormRequest
         
         return [
             'numero_orden' => 'required|string|max:50|unique:ordenes_trabajo,numero_orden,' . $ordenId,
+            'cliente_id' => 'required|exists:clientes,id',
             'vehiculo_id' => 'required|exists:vehiculos,id',
-            'cliente_nombre' => 'required|string|max:255',
             'cliente_telefono' => 'nullable|string|max:20',
             'cliente_email' => 'nullable|email|max:255',
             'descripcion_problema' => 'required|string',
@@ -55,9 +55,10 @@ class UpdateOrdenTrabajoRequest extends FormRequest
         return [
             'numero_orden.required' => 'El número de orden es obligatorio.',
             'numero_orden.unique' => 'Este número de orden ya existe.',
+            'cliente_id.required' => 'Debe seleccionar un cliente.',
+            'cliente_id.exists' => 'El cliente seleccionado no es válido.',
             'vehiculo_id.required' => 'Debe seleccionar un vehículo.',
             'vehiculo_id.exists' => 'El vehículo seleccionado no es válido.',
-            'cliente_nombre.required' => 'El nombre del cliente es obligatorio.',
             'descripcion_problema.required' => 'La descripción del problema es obligatoria.',
             'fecha_ingreso.required' => 'La fecha de ingreso es obligatoria.',
             'fecha_estimada_entrega.after_or_equal' => 'La fecha estimada de entrega debe ser posterior o igual a la fecha de ingreso.',

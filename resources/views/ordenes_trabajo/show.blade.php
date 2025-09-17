@@ -206,32 +206,95 @@
               </div>
             </div>
 
-            <!-- Tareas Relacionadas -->
-            @if($ordenTrabajo->tareas->count() > 0)
-              <div class="card card-outline card-secondary">
-                <div class="card-header">
-                  <h3 class="card-title"><i class="fas fa-tasks"></i> Tareas Relacionadas</h3>
-                </div>
-                <div class="card-body">
-                  <div class="list-group">
-                    @foreach($ordenTrabajo->tareas as $tarea)
-                      <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                          <h6 class="mb-1">{{ $tarea->titulo }}</h6>
-                          <p class="mb-1">{{ $tarea->nombre }}</p>
-                          @if($tarea->user)
-                            <small class="text-muted">Asignado a: {{ $tarea->user->name }}</small>
-                          @endif
-                        </div>
-                        <span class="badge badge-{{ $tarea->completada ? 'success' : 'warning' }} badge-pill">
-                          {{ $tarea->completada ? 'Completada' : 'Pendiente' }}
-                        </span>
-                      </div>
-                    @endforeach
-                  </div>
+            <!-- Gestión de Tareas -->
+            <div class="card card-outline card-secondary">
+              <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-tasks"></i> Gestión de Tareas</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#asignarTareaModal">
+                    <i class="fas fa-plus"></i> Asignar Tarea
+                  </button>
                 </div>
               </div>
-            @endif
+              <div class="card-body">
+                @if($ordenTrabajo->tareas->count() > 0)
+                  <div class="table-responsive">
+                    <table class="table table-hover table-sm">
+                      <thead>
+                        <tr>
+                          <th>Tarea</th>
+                          <th>Tipo</th>
+                          <th>Estado</th>
+                          <th>Asignado a</th>
+                          <th>Grupo</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($ordenTrabajo->tareas as $tarea)
+                          <tr>
+                            <td>
+                              <strong>{{ $tarea->nombre }}</strong>
+                              <br><small class="text-muted">{{ $tarea->titulo }}</small>
+                            </td>
+                            <td>
+                              <span class="badge badge-info">{{ $tarea->tipo }}</span>
+                            </td>
+                            <td>
+                              <span class="badge badge-{{ $tarea->estado === 'completada' ? 'success' : ($tarea->estado === 'en_proceso' ? 'warning' : 'secondary') }}">
+                                {{ $tarea->estado }}
+                              </span>
+                            </td>
+                            <td>
+                              @if($tarea->empleado)
+                                {{ $tarea->empleado->name }}
+                              @else
+                                <span class="text-muted">Sin asignar</span>
+                              @endif
+                            </td>
+                            <td>
+                              @if($tarea->movil)
+                                {{ $tarea->movil->nombre }}
+                              @else
+                                <span class="text-muted">Sin grupo</span>
+                              @endif
+                            </td>
+                            <td>
+                              <div class="btn-group">
+                                @if($tarea->estado !== 'completada')
+                                  <button type="button" class="btn btn-warning btn-sm cambiar-estado-tarea"
+                                          data-tarea-id="{{ $tarea->id }}"
+                                          data-estado-actual="{{ $tarea->estado }}">
+                                    <i class="fas fa-play"></i>
+                                  </button>
+                                @endif
+                                <form action="{{ route('tareas.destroy', $tarea) }}" method="POST" class="d-inline">
+                                  @csrf
+                                  @method('DELETE')
+                                  <button type="submit" class="btn btn-danger btn-sm"
+                                          onclick="return confirm('¿Eliminar esta tarea de la orden?')">
+                                    <i class="fas fa-trash"></i>
+                                  </button>
+                                </form>
+                              </div>
+                            </td>
+                          </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                  </div>
+                @else
+                  <div class="text-center py-4">
+                    <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
+                    <h5>No hay tareas asignadas</h5>
+                    <p class="text-muted">Asigna tareas para comenzar a trabajar en esta orden.</p>
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#asignarTareaModal">
+                      <i class="fas fa-plus"></i> Asignar Primera Tarea
+                    </button>
+                  </div>
+                @endif
+              </div>
+            </div>
           </div>
 
           <!-- Información del Vehículo -->
@@ -334,6 +397,75 @@
     </div>
   </div>
 </div>
+
+<!-- Modal para Asignar Tarea -->
+<div class="modal fade" id="asignarTareaModal" tabindex="-1" role="dialog" aria-labelledby="asignarTareaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="asignarTareaModalLabel">
+          <i class="fas fa-plus"></i> Asignar Tarea a la Orden
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="asignarTareaForm">
+        @csrf
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="tarea_plantilla">Seleccionar Tarea Plantilla <span class="text-danger">*</span></label>
+            <select class="form-control" id="tarea_plantilla" name="tarea_plantilla" required>
+              <option value="">Selecciona una tarea...</option>
+              <!-- Las opciones se cargarán vía AJAX -->
+            </select>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="empleado_id">Asignar a Técnico</label>
+                <select class="form-control" id="empleado_id" name="empleado_id">
+                  <option value="">Seleccionar técnico...</option>
+                  @foreach(\App\Models\User::all() as $user)
+                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="movil_id">Asignar a Grupo de Trabajo</label>
+                <select class="form-control" id="movil_id" name="movil_id">
+                  <option value="">Seleccionar grupo...</option>
+                  @foreach(\App\Models\GrupoTrabajo::where('activo', true)->get() as $grupo)
+                    <option value="{{ $grupo->id }}">{{ $grupo->nombre }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="observaciones_tarea">Observaciones Adicionales</label>
+            <textarea class="form-control" id="observaciones_tarea" name="observaciones_tarea" rows="3"
+                      placeholder="Observaciones específicas para esta tarea..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            <i class="fas fa-times"></i> Cancelar
+          </button>
+          <button type="submit" class="btn btn-success" id="btnAsignarTarea">
+            <i class="fas fa-plus"></i> Asignar Tarea
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -347,10 +479,130 @@ window.addEventListener('beforeprint', function() {
 $('form[action*="cambiar_estado"]').on('submit', function(e) {
   const estadoNuevo = $(this).find('input[name="estado"]').val();
   const confirmacion = confirm(`¿Confirmar cambio de estado a "${estadoNuevo}"?`);
-  
+
   if (!confirmacion) {
     e.preventDefault();
   }
+});
+
+// Cargar tareas disponibles cuando se abre el modal
+$('#asignarTareaModal').on('show.bs.modal', function() {
+  cargarTareasDisponibles();
+});
+
+// Función para cargar tareas disponibles
+function cargarTareasDisponibles() {
+  $.ajax({
+    url: '{{ route("tareas.disponibles") }}',
+    method: 'GET',
+    data: {
+      orden_trabajo_id: {{ $ordenTrabajo->id }}
+    },
+    success: function(response) {
+      let options = '<option value="">Selecciona una tarea...</option>';
+      response.forEach(function(tarea) {
+        options += `<option value="${tarea.id}">${tarea.nombre} (${tarea.tipo})</option>`;
+      });
+      $('#tarea_plantilla').html(options);
+    },
+    error: function(xhr) {
+      console.error('Error al cargar tareas:', xhr.responseText);
+      alert('Error al cargar las tareas disponibles');
+    }
+  });
+}
+
+// Asignar tarea al enviar el formulario
+$('#asignarTareaForm').on('submit', function(e) {
+  e.preventDefault();
+
+  const tareaId = $('#tarea_plantilla').val();
+  const empleadoId = $('#empleado_id').val();
+  const movilId = $('#movil_id').val();
+
+  if (!tareaId) {
+    alert('Debes seleccionar una tarea');
+    return;
+  }
+
+  // Mostrar loading
+  $('#btnAsignarTarea').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Asignando...');
+
+  $.ajax({
+    url: `/tareas/${tareaId}/asignar-orden`,
+    method: 'POST',
+    data: {
+      _token: '{{ csrf_token() }}',
+      orden_trabajo_id: {{ $ordenTrabajo->id }},
+      empleado_id: empleadoId,
+      movil_id: movilId,
+      observaciones: $('#observaciones_tarea').val()
+    },
+    success: function(response) {
+      if (response.success) {
+        $('#asignarTareaModal').modal('hide');
+        location.reload(); // Recargar la página para mostrar la nueva tarea
+      } else {
+        alert('Error: ' + (response.message || 'No se pudo asignar la tarea'));
+      }
+    },
+    error: function(xhr) {
+      console.error('Error:', xhr.responseText);
+      let message = 'Error al asignar la tarea';
+      if (xhr.responseJSON && xhr.responseJSON.error) {
+        message = xhr.responseJSON.error;
+      }
+      alert(message);
+    },
+    complete: function() {
+      $('#btnAsignarTarea').prop('disabled', false).html('<i class="fas fa-plus"></i> Asignar Tarea');
+    }
+  });
+});
+
+// Cambiar estado de tarea
+$('.cambiar-estado-tarea').on('click', function() {
+  const tareaId = $(this).data('tarea-id');
+  const estadoActual = $(this).data('estado-actual');
+
+  // Determinar siguiente estado
+  let nuevoEstado = 'en_proceso';
+  if (estadoActual === 'pendiente') {
+    nuevoEstado = 'en_proceso';
+  } else if (estadoActual === 'en_proceso') {
+    nuevoEstado = 'completada';
+  }
+
+  const confirmacion = confirm(`¿Cambiar el estado de la tarea a "${nuevoEstado}"?`);
+
+  if (confirmacion) {
+    $.ajax({
+      url: `/tareas/${tareaId}/actualizar-estado`,
+      method: 'PATCH',
+      data: {
+        _token: '{{ csrf_token() }}',
+        estado: nuevoEstado,
+        completada: nuevoEstado === 'completada'
+      },
+      success: function(response) {
+        if (response.success) {
+          location.reload(); // Recargar para mostrar cambios
+        } else {
+          alert('Error al actualizar el estado');
+        }
+      },
+      error: function(xhr) {
+        console.error('Error:', xhr.responseText);
+        alert('Error al actualizar el estado de la tarea');
+      }
+    });
+  }
+});
+
+// Limpiar formulario cuando se cierra el modal
+$('#asignarTareaModal').on('hidden.bs.modal', function() {
+  $('#asignarTareaForm')[0].reset();
+  $('#tarea_plantilla').html('<option value="">Selecciona una tarea...</option>');
 });
 </script>
 @endpush

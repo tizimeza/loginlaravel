@@ -68,25 +68,23 @@
                     @enderror
                   </div>
 
-                    <div class="form-group">
-                      <label for="cliente_telefono">Teléfono</label>
-                      <input type="text" class="form-control @error('cliente_telefono') is-invalid @enderror"
-                             id="cliente_telefono" value="{{ old('cliente_telefono') }}" readonly>
-                      <input type="hidden" name="cliente_telefono" value="{{ old('cliente_telefono') }}">
-                      @error('cliente_telefono')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                      @enderror
-                    </div>
+                  <div class="form-group">
+                    <label for="cliente_telefono">Teléfono</label>
+                    <input type="text" class="form-control @error('cliente_telefono') is-invalid @enderror"
+                           id="cliente_telefono" name="cliente_telefono" value="{{ old('cliente_telefono') }}" readonly>
+                    @error('cliente_telefono')
+                      <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                  </div>
 
-                    <div class="form-group">
-                      <label for="cliente_email">Email</label>
-                      <input type="email" class="form-control @error('cliente_email') is-invalid @enderror"
-                             id="cliente_email" value="{{ old('cliente_email') }}" readonly>
-                      <input type="hidden" name="cliente_email" value="{{ old('cliente_email') }}">
-                      @error('cliente_email')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                      @enderror
-                    </div>
+                  <div class="form-group">
+                    <label for="cliente_email">Email</label>
+                    <input type="email" class="form-control @error('cliente_email') is-invalid @enderror"
+                           id="cliente_email" name="cliente_email" value="{{ old('cliente_email') }}" readonly>
+                    @error('cliente_email')
+                      <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                  </div>
                 </div>
               </div>
             </div>
@@ -121,11 +119,14 @@
                   </div>
 
                   <div class="form-group">
-                    <label for="numero_orden_display">Número de Orden</label>
-                    <input type="text" class="form-control"
-                           id="numero_orden_display" value="Se generará automáticamente"
-                           readonly disabled>
-                    <small class="form-text text-muted">El número se genera automáticamente</small>
+                    <label for="numero_orden">Número de Orden</label>
+                    <input type="text" class="form-control @error('numero_orden') is-invalid @enderror" 
+                           id="numero_orden" name="numero_orden" value="{{ old('numero_orden') }}" 
+                           placeholder="Se generará automáticamente si se deja vacío">
+                    @error('numero_orden')
+                      <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                    <small class="form-text text-muted">Dejar vacío para generar automáticamente</small>
                   </div>
 
                   <div class="row">
@@ -423,14 +424,8 @@ $(document).ready(function() {
     let telefono = selectedOption.data('telefono') || '';
     let email = selectedOption.data('email') || '';
 
-    console.log('Cliente seleccionado:', selectedOption.val(), 'Teléfono:', telefono, 'Email:', email);
-
     $('#cliente_telefono').val(telefono);
     $('#cliente_email').val(email);
-
-    // Actualizar campos ocultos también
-    $('input[name="cliente_telefono"]').val(telefono);
-    $('input[name="cliente_email"]').val(email);
   });
 
   // Auto-completar fecha estimada cuando se selecciona fecha de ingreso

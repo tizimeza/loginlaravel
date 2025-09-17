@@ -52,20 +52,32 @@
                 </div>
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="cliente_nombre">Nombre del Cliente <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control @error('cliente_nombre') is-invalid @enderror" 
-                           id="cliente_nombre" name="cliente_nombre" 
-                           value="{{ old('cliente_nombre', $ordenTrabajo->cliente_nombre) }}" required>
-                    @error('cliente_nombre')
+                    <label for="cliente_id">Seleccionar Cliente <span class="text-danger">*</span></label>
+                    <select class="form-control @error('cliente_id') is-invalid @enderror"
+                            id="cliente_id" name="cliente_id" required>
+                      <option value="">Seleccionar cliente</option>
+                      @foreach($clientes as $cliente)
+                        <option value="{{ $cliente->id }}"
+                                data-telefono="{{ $cliente->telefono }}"
+                                data-email="{{ $cliente->email }}"
+                                {{ old('cliente_id', $ordenTrabajo->cliente_id) == $cliente->id ? 'selected' : '' }}>
+                          {{ $cliente->nombre }} ({{ $cliente->tipo_cliente_formateado }})
+                          @if($cliente->es_premium)
+                            <span class="badge badge-warning ml-1">Premium</span>
+                          @endif
+                        </option>
+                      @endforeach
+                    </select>
+                    @error('cliente_id')
                       <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
                   </div>
 
                   <div class="form-group">
                     <label for="cliente_telefono">Teléfono</label>
-                    <input type="text" class="form-control @error('cliente_telefono') is-invalid @enderror" 
-                           id="cliente_telefono" name="cliente_telefono" 
-                           value="{{ old('cliente_telefono', $ordenTrabajo->cliente_telefono) }}">
+                    <input type="text" class="form-control @error('cliente_telefono') is-invalid @enderror"
+                           id="cliente_telefono" name="cliente_telefono"
+                           value="{{ old('cliente_telefono', $ordenTrabajo->cliente_telefono) }}" readonly>
                     @error('cliente_telefono')
                       <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
@@ -73,9 +85,9 @@
 
                   <div class="form-group">
                     <label for="cliente_email">Email</label>
-                    <input type="email" class="form-control @error('cliente_email') is-invalid @enderror" 
-                           id="cliente_email" name="cliente_email" 
-                           value="{{ old('cliente_email', $ordenTrabajo->cliente_email) }}">
+                    <input type="email" class="form-control @error('cliente_email') is-invalid @enderror"
+                           id="cliente_email" name="cliente_email"
+                           value="{{ old('cliente_email', $ordenTrabajo->cliente_email) }}" readonly>
                     @error('cliente_email')
                       <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
@@ -340,11 +352,26 @@ $(document).ready(function() {
     }
   });
 
+  // Auto-completar cliente cuando se selecciona
+  $('#cliente_id').on('change', function() {
+    let selectedOption = $(this).find('option:selected');
+    let telefono = selectedOption.data('telefono') || '';
+    let email = selectedOption.data('email') || '';
+
+    $('#cliente_telefono').val(telefono);
+    $('#cliente_email').val(email);
+  });
+
   // Select2 para mejor UX en selects
-  $('#vehiculo_id, #user_id').select2({
+  $('#cliente_id, #vehiculo_id, #user_id').select2({
     theme: 'bootstrap4',
     width: '100%'
   });
+
+  // Cargar datos del cliente seleccionado inicialmente
+  if ($('#cliente_id').val()) {
+    $('#cliente_id').trigger('change');
+  }
 
   // Confirmar cambios importantes
   $('form').on('submit', function(e) {

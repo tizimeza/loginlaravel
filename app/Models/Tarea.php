@@ -23,7 +23,6 @@ class Tarea extends Model
      */
     protected $fillable = [
         'nombre',
-        'titulo', 
         'tipo',
         'estado',
         'completada',

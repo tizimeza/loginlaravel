@@ -25,12 +25,23 @@ Route::get('/', function () {
 
 // Rutas que requieren que el usuario esté autenticado
 Route::middleware(['auth'])->group(function () {
-    // Rutas para Tareas
-    Route::get('/tareas', [TareaController::class, 'index'])->name('tareas.index');
-    Route::post('/tareas', [TareaController::class, 'store'])->name('tareas.store');
-    Route::get('/tareas/{id}/edit', [TareaController::class, 'edit'])->name('tareas.edit');
-    Route::put('/tareas/{id}', [TareaController::class, 'update'])->name('tareas.update');
-    Route::delete('/tareas/{id}', [TareaController::class, 'destroy'])->name('tareas.destroy');
+    // Ruta de prueba para debugging
+    Route::get('/test-tareas', function () {
+        return view('test_laravel_simple');
+    })->name('test.tareas');
+
+    Route::get('/create-nuevo', function () {
+        return view('ordenes_trabajo.create_nuevo');
+    })->name('ordenes_trabajo.create_nuevo');
+
+    // Rutas para Tareas (plantillas y asignación)
+    Route::resource('tareas', TareaController::class)->parameters(['tareas' => 'tarea']);
+
+    // Rutas adicionales para gestión de tareas
+    Route::post('tareas/{tarea}/asignar-orden', [TareaController::class, 'asignarAOrden'])->name('tareas.asignar_orden');
+    Route::get('ordenes_trabajo/{ordenTrabajo}/tareas', [TareaController::class, 'tareasDeOrden'])->name('tareas.orden');
+    Route::patch('tareas/{tarea}/actualizar-estado', [TareaController::class, 'actualizarEstado'])->name('tareas.actualizar_estado');
+    Route::get('tareas-disponibles', [TareaController::class, 'disponiblesParaOrden'])->name('tareas.disponibles');
 
     // <-- 2. AÑADIR LA RUTA DE RECURSO PARA VEHÍCULOS AQUÍ
     Route::resource('vehiculos', VehiculoController::class)->parameters(['vehiculos' => 'vehiculo']);

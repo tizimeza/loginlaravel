@@ -85,20 +85,40 @@ class OrdenTrabajoController extends Controller
     public function store(StoreOrdenTrabajoRequest $request)
     {
         $data = $request->validated();
-        
-        // Generar número de orden automático
-        $data['numero_orden'] = OrdenTrabajo::generarNumeroOrden();
-        
+
         // Establecer fecha de ingreso
         $data['fecha_ingreso'] = now();
-        
-        // Establecer estado inicial
-        $data['estado'] = 'nueva';
 
-        OrdenTrabajo::create($data);
+        // Asegurar que el estado sea 'pendiente' por defecto
+        $data['estado'] = $data['estado'] ?? 'pendiente';
+
+        // Crear la orden de trabajo (el modelo generará el numero_orden automáticamente)
+        $ordenTrabajo = OrdenTrabajo::create($data);
+
+        // Procesar tareas si se enviaron
+        if ($request->has('tareas') && is_array($request->tareas)) {
+            foreach ($request->tareas as $tareaData) {
+                // Obtener la tarea plantilla
+                $tareaPlantilla = \App\Models\Tarea::find($tareaData['tarea_plantilla_id']);
+
+                if ($tareaPlantilla) {
+                    // Crear una nueva instancia de tarea asignada a la orden
+                    \App\Models\Tarea::create([
+                        'nombre' => $tareaPlantilla->nombre,
+                        'tipo' => $tareaPlantilla->tipo,
+                        'estado' => 'pendiente',
+                        'completada' => false,
+                        'orden_trabajo_id' => $ordenTrabajo->id,
+                        'empleado_id' => $tareaData['empleado_id'] ?? null,
+                        'movil_id' => $tareaData['movil_id'] ?? null,
+                        'user_id' => auth()->id(),
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('ordenes_trabajo.index')
-            ->with('success', 'Orden de trabajo creada exitosamente.');
+            ->with('success', 'Orden de trabajo creada exitosamente con ' . count($request->tareas ?? []) . ' tareas asignadas.');
     }
 
     /**

@@ -17,10 +17,10 @@ class OrdenTrabajo extends Model
         'tipo_servicio',
         'cliente_id',
         'vehiculo_id',
-        'direccion',
+        //'direccion', // Campo no existe en tabla
         'cliente_telefono',
         'cliente_email',
-        'descripcion_trabajo',
+        'descripcion_problema',
         'fecha_ingreso',
         'fecha_asignacion',
         'fecha_finalizacion',
@@ -32,10 +32,26 @@ class OrdenTrabajo extends Model
         'coordenadas_gps',
         'telefono_contacto',
         'horario_preferido',
+        'fecha_estimada_entrega',
+        'fecha_entrega_real',
+        'costo_estimado',
+        'costo_final',
         'user_id', // Técnico asignado
         'grupo_trabajo_id', // Grupo asignado
         'total' // Total de la orden
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($ordenTrabajo) {
+            // Generar número de orden automáticamente si no está establecido
+            if (empty($ordenTrabajo->numero_orden)) {
+                $ordenTrabajo->numero_orden = static::generarNumeroOrden();
+            }
+        });
+    }
 
     protected $casts = [
         'fecha_ingreso'       => 'datetime',
@@ -51,18 +67,20 @@ class OrdenTrabajo extends Model
 
     // Estados posibles según workflow de TecnoServi
     const ESTADOS = [
-        'nueva'        => 'Nueva',
-        'vista'        => 'Vista',
-        'en_proceso'   => 'En Proceso',
-        'terminada'    => 'Terminada',
-        'no_terminada' => 'No Terminada'
+        'pendiente'           => 'Pendiente',
+        'en_proceso'          => 'En Proceso',
+        'esperando_repuestos' => 'Esperando Repuestos',
+        'completado'          => 'Completado',
+        'entregado'           => 'Entregado',
+        'cancelado'           => 'Cancelado'
     ];
 
     // Prioridades
     const PRIORIDADES = [
-        'normal'   => 'Normal',
-        'alta'     => 'Alta',
-        'critica'  => 'Crítica (Cliente Premium)'
+        'baja'   => 'Baja',
+        'media'  => 'Media',
+        'alta'   => 'Alta',
+        'urgent' => 'Urgente'
     ];
 
     // Tipos de servicio de TecnoServi
@@ -104,6 +122,14 @@ class OrdenTrabajo extends Model
     public function grupoTrabajo()
     {
         return $this->belongsTo(GrupoTrabajo::class, 'grupo_trabajo_id');
+    }
+
+    /**
+     * Relación: Una orden de trabajo pertenece a un vehículo
+     */
+    public function vehiculo()
+    {
+        return $this->belongsTo(\App\Models\Vehiculo::class, 'vehiculo_id');
     }
 
     /**
@@ -160,11 +186,12 @@ class OrdenTrabajo extends Model
     public function getColorEstadoAttribute()
     {
         $colores = [
-            'nueva'        => 'secondary',
-            'vista'        => 'info',
-            'en_proceso'   => 'warning',
-            'terminada'    => 'success',
-            'no_terminada' => 'danger',
+            'pendiente'           => 'secondary',
+            'en_proceso'          => 'warning',
+            'esperando_repuestos' => 'info',
+            'completado'          => 'primary',
+            'entregado'           => 'success',
+            'cancelado'           => 'danger',
         ];
 
         return $colores[$this->estado] ?? 'secondary';
@@ -176,9 +203,10 @@ class OrdenTrabajo extends Model
     public function getColorPrioridadAttribute()
     {
         $colores = [
-            'normal'  => 'success',
-            'alta'    => 'warning',
-            'critica' => 'danger'
+            'baja'   => 'success',
+            'media'  => 'info',
+            'alta'   => 'warning',
+            'urgent' => 'danger'
         ];
 
         return $colores[$this->prioridad] ?? 'secondary';
@@ -190,11 +218,12 @@ class OrdenTrabajo extends Model
     public static function getColorEstado($estado)
     {
         $colores = [
-            'nueva'        => 'secondary',
-            'vista'        => 'info',
-            'en_proceso'   => 'warning',
-            'terminada'    => 'success',
-            'no_terminada' => 'danger',
+            'pendiente'           => 'secondary',
+            'en_proceso'          => 'warning',
+            'esperando_repuestos' => 'info',
+            'completado'          => 'primary',
+            'entregado'           => 'success',
+            'cancelado'           => 'danger',
         ];
 
         return $colores[$estado] ?? 'secondary';
