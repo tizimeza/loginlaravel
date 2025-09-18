@@ -29,7 +29,8 @@ class Tarea extends Model
         'user_id',
         'empleado_id',
         'orden_trabajo_id',
-        'movil_id'
+        'movil_id',
+        'observaciones'
     ];
 
     /**

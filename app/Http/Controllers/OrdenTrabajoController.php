@@ -86,8 +86,10 @@ class OrdenTrabajoController extends Controller
     {
         $data = $request->validated();
 
-        // Establecer fecha de ingreso
-        $data['fecha_ingreso'] = now();
+        // Establecer fecha de ingreso solo si no viene del formulario
+        if (!isset($data['fecha_ingreso']) || empty($data['fecha_ingreso'])) {
+            $data['fecha_ingreso'] = now();
+        }
 
         // Asegurar que el estado sea 'pendiente' por defecto
         $data['estado'] = $data['estado'] ?? 'pendiente';
@@ -111,6 +113,7 @@ class OrdenTrabajoController extends Controller
                         'orden_trabajo_id' => $ordenTrabajo->id,
                         'empleado_id' => $tareaData['empleado_id'] ?? null,
                         'movil_id' => $tareaData['movil_id'] ?? null,
+                        'observaciones' => $tareaData['observaciones'] ?? null,
                         'user_id' => auth()->id(),
                     ]);
                 }

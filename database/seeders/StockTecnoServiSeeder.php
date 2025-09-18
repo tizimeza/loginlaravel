@@ -295,3 +295,4 @@ class StockTecnoServiSeeder extends Seeder
     }
 }
 
+
