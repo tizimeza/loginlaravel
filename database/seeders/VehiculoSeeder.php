@@ -84,9 +84,9 @@ class VehiculoSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ 3 furgonetas de TecnoServi creadas exitosamente:');
-        $this->command->info('🚐 Ford Transit - ABC 123');
-        $this->command->info('🚐 Renault Kangoo - XY 456 Z');
-        $this->command->info('🚐 Peugeot Partner - DE 789 F');
+        $this->command->info('3 furgonetas de TecnoServi creadas exitosamente:');
+        $this->command->info('Ford Transit - ABC 123');
+        $this->command->info('Renault Kangoo - XY 456 Z');
+        $this->command->info('Peugeot Partner - DE 789 F');
     }
 }

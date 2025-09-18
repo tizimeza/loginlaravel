@@ -68,9 +68,9 @@ class GrupoTrabajoSeeder extends Seeder
             $grupo->miembros()->attach($miembrosAdicionales->pluck('id'));
         }
 
-        $this->command->info('✅ 3 móviles de TecnoServi creados exitosamente:');
-        $this->command->info('🚐 Móvil Alpha - Instalaciones Residenciales');
-        $this->command->info('🚐 Móvil Beta - Servicios Comerciales');
-        $this->command->info('🚐 Móvil Gamma - Emergencias y Reconexiones');
+        $this->command->info(' 3 móviles de TecnoServi creados exitosamente:');
+        $this->command->info(' Móvil Alpha - Instalaciones Residenciales');
+        $this->command->info('Móvil Beta - Servicios Comerciales');
+        $this->command->info('Móvil Gamma - Emergencias y Reconexiones');
     }
 }

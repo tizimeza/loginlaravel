@@ -51,7 +51,7 @@ class OrdenTrabajoTecnoServiSeeder extends Seeder
             'vehiculo_id' => $vehiculos->first()->id
         ]);
 
-        $this->command->info('✅ 1 orden de trabajo de TecnoServi creada exitosamente:');
-        $this->command->info('🏥 Instalación Hospital San Rafael (En Proceso - Crítica)');
+        $this->command->info(' 1 orden de trabajo de TecnoServi creada exitosamente:');
+        $this->command->info(' Instalación Hospital San Rafael (En Proceso - Crítica)');
     }
 }
