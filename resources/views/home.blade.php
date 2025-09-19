@@ -199,15 +199,15 @@
                 <tr>
                   <td><strong>{{ $vehiculo->patente }}</strong></td>
                   <td>
-                    @if($vehiculo->modelo && $vehiculo->modelo->marca)
-                      {{ $vehiculo->modelo->marca->nombre }}
+                    @if($vehiculo->marca)
+                      {{ $vehiculo->marca }}
                     @else
                       <span class="text-muted">N/A</span>
                     @endif
                   </td>
                   <td>
                     @if($vehiculo->modelo)
-                      {{ $vehiculo->modelo->nombre }}
+                      {{ $vehiculo->modelo }}
                     @else
                       <span class="text-muted">N/A</span>
                     @endif

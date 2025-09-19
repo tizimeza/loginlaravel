@@ -16,15 +16,6 @@ class VehiculoSeeder extends Seeder
      */
     public function run()
     {
-        // Obtener un modelo existente o crear uno por defecto
-        $modelo = Modelo::first();
-        if (!$modelo) {
-            $modelo = Modelo::create([
-                'nombre' => 'Modelo Genérico',
-                'marca_id' => 1
-            ]);
-        }
-
         // Crear las 3 furgonetas específicas de TecnoServi
         $furgonetas = [
             [
@@ -32,7 +23,6 @@ class VehiculoSeeder extends Seeder
                 'tipo_vehiculo' => 'transit',
                 'marca' => 'Ford',
                 'modelo' => 'Transit',
-                'modelo_id' => $modelo->id,
                 'color' => 'Blanco',
                 'anio' => 2022,
                 'capacidad_carga' => 1500,
@@ -48,7 +38,6 @@ class VehiculoSeeder extends Seeder
                 'tipo_vehiculo' => 'kangoo',
                 'marca' => 'Renault',
                 'modelo' => 'Kangoo',
-                'modelo_id' => $modelo->id,
                 'color' => 'Azul',
                 'anio' => 2021,
                 'capacidad_carga' => 800,
@@ -64,7 +53,6 @@ class VehiculoSeeder extends Seeder
                 'tipo_vehiculo' => 'partner',
                 'marca' => 'Peugeot',
                 'modelo' => 'Partner',
-                'modelo_id' => $modelo->id,
                 'color' => 'Gris',
                 'anio' => 2023,
                 'capacidad_carga' => 1000,
@@ -77,16 +65,33 @@ class VehiculoSeeder extends Seeder
             ]
         ];
 
-        foreach ($furgonetas as $furgoneta) {
-            Vehiculo::firstOrCreate(
-                ['patente' => $furgoneta['patente']],
-                $furgoneta
-            );
+        foreach ($furgonetas as $furgonetaData) {
+            // Buscar o crear el modelo correspondiente
+            $marca = \App\Models\Marca::where('nombre', $furgonetaData['marca'])->first();
+
+            if ($marca) {
+                $modelo = \App\Models\Modelo::firstOrCreate(
+                    [
+                        'nombre' => $furgonetaData['modelo'],
+                        'marca_id' => $marca->id
+                    ]
+                );
+
+                // Agregar el modelo_id a los datos del vehículo
+                $furgonetaData['modelo_id'] = $modelo->id;
+
+                // Crear el vehículo
+                Vehiculo::firstOrCreate(
+                    ['patente' => $furgonetaData['patente']],
+                    $furgonetaData
+                );
+
+                $this->command->info("Vehículo creado: {$furgonetaData['marca']} {$furgonetaData['modelo']} - {$furgonetaData['patente']}");
+            } else {
+                $this->command->error("No se encontró la marca: {$furgonetaData['marca']} para el vehículo {$furgonetaData['patente']}");
+            }
         }
 
-        $this->command->info('3 furgonetas de TecnoServi creadas exitosamente:');
-        $this->command->info('Ford Transit - ABC 123');
-        $this->command->info('Renault Kangoo - XY 456 Z');
-        $this->command->info('Peugeot Partner - DE 789 F');
+        $this->command->info('Proceso de creación de furgonetas de TecnoServi completado.');
     }
 }

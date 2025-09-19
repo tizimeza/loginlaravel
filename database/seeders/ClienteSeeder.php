@@ -88,7 +88,7 @@ class ClienteSeeder extends Seeder
                 'email' => 'sistemas@eldorado.gob.ar',
                 'telefono' => '0375-421-3456',
                 'direccion' => 'Av. San Martín 915, Eldorado',
-                'tipo_cliente' => 'gobierno',
+                'tipo_cliente' => 'empresa',
                 'es_premium' => true,
                 'documento' => '30-99887766-5',
                 'observaciones' => 'Organismo público - Servicios municipales',
@@ -140,7 +140,7 @@ class ClienteSeeder extends Seeder
         $this->command->info('Ana Beatriz Silva (Residencial)');
         $this->command->info('Supermercado San Martín (Comercial)');
         $this->command->info('Clínica San José (Crítico)');
-        $this->command->info('Municipalidad de Eldorado (Gobierno)');
+        $this->command->info('Municipalidad de Eldorado (Empresa)');
         $this->command->info('Roberto Fernández (Residencial)');
         $this->command->info('Aserradero Dos Hermanos (Empresa)');
         $this->command->info('Farmacia Central (Comercial)');

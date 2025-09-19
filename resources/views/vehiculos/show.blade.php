@@ -66,14 +66,14 @@
               @if ($vehiculo->modelo)
                 <tr>
                   <th width="40%">Modelo:</th>
-                  <td>{{ $vehiculo->modelo->nombre }}</td>
+                  <td>{{ $vehiculo->modelo }}</td>
                 </tr>
-                
-                @if ($vehiculo->modelo->marca)
+
+                @if ($vehiculo->marca)
                   <tr>
                     <th>Marca:</th>
                     <td>
-                      <strong>{{ $vehiculo->modelo->marca->nombre }}</strong>
+                      <strong>{{ $vehiculo->marca }}</strong>
                     </td>
                   </tr>
                 @endif

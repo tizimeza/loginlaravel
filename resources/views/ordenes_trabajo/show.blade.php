@@ -319,14 +319,14 @@
                       <td><strong>Patente:</strong></td>
                       <td>{{ $ordenTrabajo->vehiculo->patente }}</td>
                     </tr>
-                    @if($ordenTrabajo->vehiculo->modelo && $ordenTrabajo->vehiculo->modelo->marca)
+                    @if($ordenTrabajo->vehiculo->marca && $ordenTrabajo->vehiculo->modelo)
                       <tr>
                         <td><strong>Marca:</strong></td>
-                        <td>{{ $ordenTrabajo->vehiculo->modelo->marca->nombre }}</td>
+                        <td>{{ $ordenTrabajo->vehiculo->marca }}</td>
                       </tr>
                       <tr>
                         <td><strong>Modelo:</strong></td>
-                        <td>{{ $ordenTrabajo->vehiculo->modelo->nombre }}</td>
+                        <td>{{ $ordenTrabajo->vehiculo->modelo }}</td>
                       </tr>
                     @endif
                     <tr>

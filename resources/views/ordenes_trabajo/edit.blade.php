@@ -112,8 +112,8 @@
                         <option value="{{ $vehiculo->id }}" 
                                 {{ old('vehiculo_id', $ordenTrabajo->vehiculo_id) == $vehiculo->id ? 'selected' : '' }}>
                           {{ $vehiculo->patente }} - 
-                          @if($vehiculo->modelo && $vehiculo->modelo->marca)
-                            {{ $vehiculo->modelo->marca->nombre }} {{ $vehiculo->modelo->nombre }}
+                          @if($vehiculo->marca && $vehiculo->modelo)
+                            {{ $vehiculo->marca }} {{ $vehiculo->modelo }}
                           @else
                             Sin modelo
                           @endif

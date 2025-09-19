@@ -114,9 +114,9 @@
                   <td>
                     @if($orden->vehiculo)
                       <strong>{{ $orden->vehiculo->patente }}</strong>
-                      @if($orden->vehiculo->modelo && $orden->vehiculo->modelo->marca)
+                      @if($orden->vehiculo->marca && $orden->vehiculo->modelo)
                         <br><small class="text-muted">
-                          {{ $orden->vehiculo->modelo->marca->nombre }} {{ $orden->vehiculo->modelo->nombre }}
+                          {{ $orden->vehiculo->marca }} {{ $orden->vehiculo->modelo }}
                         </small>
                       @endif
                     @else
