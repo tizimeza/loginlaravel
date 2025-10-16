@@ -56,8 +56,8 @@ php artisan view:clear
 
 echo ""
 echo -e "${GREEN}[5/8]${NC} Publicando archivos de Spatie Permission..."
-php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
-php artisan config:clear
+php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider" --tag="permission-config" --force &>/dev/null || true
+php artisan config:clear &>/dev/null || true
 
 echo ""
 echo "========================================"

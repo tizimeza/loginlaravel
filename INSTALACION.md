@@ -32,7 +32,7 @@ npm --version
 ### 1️⃣ Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/loginlaravel.git
+git clone https://github.com/tizimeza/loginlaravel.git
 cd loginlaravel
 ```
 
@@ -222,12 +222,12 @@ Si prefieres ejecutar todos los comandos de una vez:
 
 **Windows:**
 ```bash
-git clone https://github.com/tu-usuario/loginlaravel.git && cd loginlaravel && composer install && npm install && copy .env.example .env && php artisan key:generate && php artisan migrate && php artisan db:seed && php artisan storage:link && php artisan serve
+git clone https://github.com/tizimeza/loginlaravel.git && cd loginlaravel && composer install && npm install && copy .env.example .env && php artisan key:generate && php artisan migrate && php artisan db:seed && php artisan storage:link && php artisan serve
 ```
 
 **Linux/Mac:**
 ```bash
-git clone https://github.com/tu-usuario/loginlaravel.git && cd loginlaravel && composer install && npm install && cp .env.example .env && php artisan key:generate && php artisan migrate && php artisan db:seed && php artisan storage:link && php artisan serve
+git clone https://github.com/tizimeza/loginlaravel.git && cd loginlaravel && composer install && npm install && cp .env.example .env && php artisan key:generate && php artisan migrate && php artisan db:seed && php artisan storage:link && php artisan serve
 ```
 
 > ⚠️ **Nota**: Debes crear la base de datos manualmente antes de ejecutar este comando.

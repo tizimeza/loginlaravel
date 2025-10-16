@@ -16,7 +16,7 @@ TecnoServi es una aplicación web completa para gestionar operaciones de servici
 
 ## Tecnologías Utilizadas
 
-- **Backend**: Laravel 10
+- **Backend**: Laravel 9
 - **Frontend**: AdminLTE 3, Bootstrap 4
 - **Base de Datos**: MySQL
 - **Autenticación**: Laravel Breeze
@@ -39,7 +39,7 @@ Sigue estos pasos para instalar el proyecto en tu máquina local:
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/loginlaravel.git
+git clone https://github.com/tizimeza/loginlaravel.git
 cd loginlaravel
 ```
 
@@ -262,10 +262,4 @@ Verifica que:
 
 Este proyecto es de código abierto. Puedes usarlo y modificarlo libremente.
 
-## Contacto
 
-Para consultas o soporte, contacta a: admin@tecnoservi.com
-
----
-
-**Desarrollado con ❤️ para TecnoServi**

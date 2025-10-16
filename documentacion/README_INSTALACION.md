@@ -16,12 +16,6 @@
 install.bat
 ```
 
-**Linux/Mac:**
-```bash
-chmod +x install.sh
-./install.sh
-```
-
 El script instalará todo automáticamente y creará usuarios de prueba.
 
 ---
@@ -57,8 +51,6 @@ composer install
 # En Windows
 copy .env.example .env
 
-# En Linux/Mac
-cp .env.example .env
 ```
 
 Edita el archivo `.env` y configura tu base de datos:
@@ -148,13 +140,6 @@ El seeder crea los siguientes usuarios:
 
 ```bash
 install.bat
-```
-
-### Para Linux/Mac (install.sh)
-
-```bash
-chmod +x install.sh
-./install.sh
 ```
 
 ## Problemas Comunes

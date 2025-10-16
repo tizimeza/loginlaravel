@@ -56,8 +56,8 @@ call php artisan view:clear
 
 echo.
 echo [5/8] Publicando archivos de Spatie Permission...
-call php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
-call php artisan config:clear
+call php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider" --tag="permission-config" --force >nul 2>&1
+call php artisan config:clear >nul 2>&1
 
 echo.
 echo ========================================
