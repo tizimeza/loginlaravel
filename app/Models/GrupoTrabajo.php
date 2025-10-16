@@ -28,7 +28,7 @@ class GrupoTrabajo extends Model
         'activo' => 'boolean',
     ];
 
-    // Especialidades de los móviles
+    // Especialidades de los móviles (TecnoServi - Servicios de Internet/Telefonía)
     const ESPECIALIDADES = [
         'instalacion'   => 'Instalación de servicio',
         'reconexion'    => 'Reconexión',

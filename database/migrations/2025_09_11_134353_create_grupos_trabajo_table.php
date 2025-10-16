@@ -21,10 +21,9 @@ return new class extends Migration
             $table->boolean('activo')->default(true);
             $table->string('color')->default('primary');
             $table->enum('especialidad', [
-                'mecanica_general', 'electricidad', 'carroceria', 'neumaticos', 
-                'aire_acondicionado', 'frenos', 'transmision', 'motor', 
-                'suspension', 'diagnostico'
-            ])->default('mecanica_general');
+                'instalacion', 'reconexion', 'service', 'desconexion',
+                'cableado', 'fibra_optica', 'wifi', 'soporte', 'general'
+            ])->default('general');
             $table->timestamps();
             
             // Índices

@@ -366,7 +366,11 @@
                   <a href="{{ route('ordenes_trabajo.edit', $ordenTrabajo->id) }}" class="btn btn-warning btn-block">
                     <i class="fas fa-edit"></i> Editar Orden
                   </a>
-                  
+
+                  <a href="{{ route('reportes.orden-trabajo-pdf', $ordenTrabajo->id) }}" class="btn btn-danger btn-block" target="_blank">
+                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                  </a>
+
                   <button type="button" class="btn btn-info btn-block" onclick="window.print()">
                     <i class="fas fa-print"></i> Imprimir
                   </button>

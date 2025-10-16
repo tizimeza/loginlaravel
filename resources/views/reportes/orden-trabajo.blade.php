@@ -12,14 +12,14 @@
         }
         body {
             font-family: Arial, sans-serif;
-            font-size: 12px;
-            line-height: 1.6;
+            font-size: 11px;
+            line-height: 1.5;
             color: #333;
             padding: 20px;
         }
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             border-bottom: 3px solid #007bff;
             padding-bottom: 15px;
         }
@@ -32,41 +32,40 @@
             color: #666;
             font-size: 11px;
         }
-        .orden-info {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .orden-info h2 {
-            color: #007bff;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-        .info-row {
+        .stats-container {
             display: table;
             width: 100%;
-            margin-bottom: 8px;
-        }
-        .info-label {
-            display: table-cell;
-            width: 35%;
-            font-weight: bold;
-            color: #555;
-        }
-        .info-value {
-            display: table-cell;
-            width: 65%;
-        }
-        .section {
             margin-bottom: 25px;
         }
-        .section h3 {
+        .stat-box {
+            display: table-cell;
+            width: 25%;
+            background-color: #f8f9fa;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+        .stat-box h3 {
+            color: #007bff;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        .stat-box .value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        .stat-box .label {
+            font-size: 9px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .section-title {
             background-color: #007bff;
             color: white;
             padding: 8px 12px;
-            font-size: 14px;
-            margin-bottom: 12px;
+            font-size: 13px;
+            margin: 20px 0 10px 0;
             border-radius: 3px;
         }
         table {
@@ -75,57 +74,98 @@
             margin-bottom: 15px;
         }
         table th {
-            background-color: #e9ecef;
-            color: #333;
+            background-color: #007bff;
+            color: white;
             font-weight: bold;
-            padding: 10px;
+            padding: 10px 8px;
             text-align: left;
-            border: 1px solid #dee2e6;
+            border: 1px solid #0056b3;
+            font-size: 11px;
         }
         table td {
-            padding: 8px 10px;
+            padding: 8px;
             border: 1px solid #dee2e6;
+            font-size: 10px;
         }
         table tr:nth-child(even) {
             background-color: #f8f9fa;
         }
-        .estado-badge {
+        .info-table td {
+            padding: 6px 10px;
+        }
+        .info-table td:first-child {
+            font-weight: bold;
+            width: 30%;
+            background-color: #e9ecef;
+        }
+        .badge {
             display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 9px;
             font-weight: bold;
             text-transform: uppercase;
         }
-        .estado-pendiente {
-            background-color: #ffc107;
-            color: #000;
-        }
-        .estado-en_proceso {
-            background-color: #17a2b8;
-            color: white;
-        }
-        .estado-completado {
+        .badge-success {
             background-color: #28a745;
             color: white;
         }
-        .estado-cancelado {
+        .badge-warning {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .badge-danger {
             background-color: #dc3545;
             color: white;
         }
+        .badge-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .badge-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .badge-primary {
+            background-color: #007bff;
+            color: white;
+        }
         .footer {
-            margin-top: 40px;
+            margin-top: 30px;
             padding-top: 15px;
             border-top: 2px solid #dee2e6;
             text-align: center;
-            font-size: 10px;
+            font-size: 9px;
             color: #666;
         }
+        .text-right {
+            text-align: right;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .descripcion-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+        .observaciones-box {
+            background-color: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 12px;
+            margin: 10px 0;
+            font-size: 11px;
+            line-height: 1.6;
+        }
         .total-section {
-            background-color: #f8f9fa;
+            background-color: #e9ecef;
             padding: 15px;
             border-radius: 5px;
             margin-top: 15px;
+            border: 2px solid #007bff;
         }
         .total-row {
             display: table;
@@ -138,209 +178,312 @@
             text-align: right;
             font-weight: bold;
             padding-right: 15px;
+            font-size: 12px;
         }
         .total-value {
             display: table-cell;
             width: 30%;
             text-align: right;
             font-size: 14px;
-        }
-        .grand-total {
-            font-size: 18px;
-            color: #007bff;
-            border-top: 2px solid #007bff;
-            padding-top: 10px;
-            margin-top: 10px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>TECNOSERVI</h1>
-        <p>Sistema de Gestión de Órdenes de Trabajo</p>
-        <p>Servicios de Internet y Soporte Técnico</p>
+        <h1>ORDEN DE TRABAJO</h1>
+        <p>TecnoServi - Sistema de Gestión de Servicios Técnicos</p>
+        <p>Generado el {{ now()->format('d/m/Y H:i:s') }}</p>
     </div>
 
-    <div class="orden-info">
-        <h2>ORDEN DE TRABAJO {{ $orden->numero_orden }}</h2>
-        <div class="info-row">
-            <div class="info-label">Estado:</div>
-            <div class="info-value">
-                <span class="estado-badge estado-{{ $orden->estado }}">
-                    {{ ucfirst(str_replace('_', ' ', $orden->estado)) }}
-                </span>
+    <div class="stats-container">
+        <div class="stat-box">
+            <h3>Nº Orden</h3>
+            <div class="value">{{ $orden->numero_orden }}</div>
+            <div class="label">Número de Orden</div>
+        </div>
+        <div class="stat-box">
+            <h3>Estado</h3>
+            <div class="value">
+                @php
+                    $colorEstado = match($orden->estado) {
+                        'pendiente' => 'secondary',
+                        'en_proceso' => 'warning',
+                        'esperando_repuestos' => 'info',
+                        'completado' => 'primary',
+                        'entregado' => 'success',
+                        'cancelado' => 'danger',
+                        default => 'secondary'
+                    };
+                @endphp
+                <span class="badge badge-{{ $colorEstado }}">{{ $orden->estado_formateado }}</span>
             </div>
+            <div class="label">Estado Actual</div>
         </div>
-        <div class="info-row">
-            <div class="info-label">Fecha de Creación:</div>
-            <div class="info-value">{{ $orden->created_at->format('d/m/Y H:i') }}</div>
+        <div class="stat-box">
+            <h3>Prioridad</h3>
+            <div class="value">
+                @php
+                    $colorPrioridad = match($orden->prioridad) {
+                        'baja' => 'success',
+                        'media' => 'info',
+                        'alta' => 'warning',
+                        'urgent' => 'danger',
+                        default => 'secondary'
+                    };
+                @endphp
+                <span class="badge badge-{{ $colorPrioridad }}">{{ $orden->prioridad_formateada }}</span>
+            </div>
+            <div class="label">Nivel de Prioridad</div>
         </div>
-        @if($orden->fecha_inicio)
-        <div class="info-row">
-            <div class="info-label">Fecha de Inicio:</div>
-            <div class="info-value">{{ \Carbon\Carbon::parse($orden->fecha_inicio)->format('d/m/Y H:i') }}</div>
+        <div class="stat-box">
+            <h3>Tipo Servicio</h3>
+            <div class="value">
+                <span class="badge badge-info">{{ $orden->tipo_servicio_formateado }}</span>
+            </div>
+            <div class="label">Tipo de Servicio</div>
         </div>
-        @endif
-        @if($orden->fecha_fin)
-        <div class="info-row">
-            <div class="info-label">Fecha de Finalización:</div>
-            <div class="info-value">{{ \Carbon\Carbon::parse($orden->fecha_fin)->format('d/m/Y H:i') }}</div>
-        </div>
-        @endif
     </div>
 
-    <div class="section">
-        <h3>INFORMACIÓN DEL CLIENTE</h3>
-        <table>
-            <tr>
-                <td style="width: 25%; font-weight: bold;">Nombre:</td>
-                <td style="width: 75%;">{{ $orden->cliente->nombre ?? 'N/A' }}</td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Email:</td>
-                <td>{{ $orden->cliente->email ?? 'N/A' }}</td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Teléfono:</td>
-                <td>{{ $orden->cliente->telefono ?? 'N/A' }}</td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Dirección:</td>
-                <td>{{ $orden->cliente->direccion ?? 'N/A' }}</td>
-            </tr>
-        </table>
-    </div>
+    <div class="section-title">INFORMACIÓN DE LA ORDEN</div>
+    <table class="info-table">
+        <tr>
+            <td>Fecha de Ingreso:</td>
+            <td>{{ $orden->fecha_ingreso ? $orden->fecha_ingreso->format('d/m/Y H:i') : 'N/A' }}</td>
+        </tr>
+        <tr>
+            <td>Fecha Estimada de Entrega:</td>
+            <td>{{ $orden->fecha_estimada_entrega ? $orden->fecha_estimada_entrega->format('d/m/Y H:i') : 'Sin fecha estimada' }}</td>
+        </tr>
+        @if($orden->fecha_entrega_real)
+        <tr>
+            <td>Fecha Real de Entrega:</td>
+            <td>{{ $orden->fecha_entrega_real->format('d/m/Y H:i') }}</td>
+        </tr>
+        @endif
+        @if($orden->fecha_asignacion)
+        <tr>
+            <td>Fecha de Asignación:</td>
+            <td>{{ $orden->fecha_asignacion->format('d/m/Y H:i') }}</td>
+        </tr>
+        @endif
+        @if($orden->fecha_finalizacion)
+        <tr>
+            <td>Fecha de Finalización:</td>
+            <td>{{ $orden->fecha_finalizacion->format('d/m/Y H:i') }}</td>
+        </tr>
+        @endif
+        <tr>
+            <td>Horario Preferido:</td>
+            <td>{{ $orden->horario_preferido ?? 'Sin especificar' }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">INFORMACIÓN DEL CLIENTE</div>
+    <table class="info-table">
+        <tr>
+            <td>Cliente:</td>
+            <td>
+                @if($orden->cliente)
+                    <strong>{{ $orden->cliente->nombre }}</strong>
+                    @if($orden->es_cliente_premium)
+                        <span class="badge badge-warning">PREMIUM</span>
+                    @endif
+                @else
+                    Sin información de cliente
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <td>Teléfono:</td>
+            <td>
+                @if($orden->cliente && $orden->cliente->telefono)
+                    {{ $orden->cliente->telefono }}
+                @elseif($orden->cliente_telefono)
+                    {{ $orden->cliente_telefono }}
+                @else
+                    No proporcionado
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td>
+                @if($orden->cliente && $orden->cliente->email)
+                    {{ $orden->cliente->email }}
+                @elseif($orden->cliente_email)
+                    {{ $orden->cliente_email }}
+                @else
+                    No proporcionado
+                @endif
+            </td>
+        </tr>
+        @if($orden->cliente && $orden->cliente->direccion)
+        <tr>
+            <td>Dirección:</td>
+            <td>{{ $orden->cliente->direccion }}</td>
+        </tr>
+        @endif
+        @if($orden->telefono_contacto)
+        <tr>
+            <td>Teléfono de Contacto:</td>
+            <td>{{ $orden->telefono_contacto }}</td>
+        </tr>
+        @endif
+    </table>
 
     @if($orden->vehiculo)
-    <div class="section">
-        <h3>VEHÍCULO ASIGNADO</h3>
-        <table>
-            <tr>
-                <td style="width: 25%; font-weight: bold;">Patente:</td>
-                <td style="width: 75%;">{{ $orden->vehiculo->patente }}</td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Modelo:</td>
-                <td>{{ $orden->vehiculo->modelo->marca->nombre ?? '' }} {{ $orden->vehiculo->modelo->nombre ?? 'N/A' }}</td>
-            </tr>
-            @if($orden->vehiculo->tipo)
-            <tr>
-                <td style="font-weight: bold;">Tipo:</td>
-                <td>{{ ucfirst($orden->vehiculo->tipo) }}</td>
-            </tr>
-            @endif
-        </table>
-    </div>
+    <div class="section-title">VEHÍCULO ASIGNADO</div>
+    <table class="info-table">
+        <tr>
+            <td>Patente:</td>
+            <td><strong>{{ $orden->vehiculo->patente }}</strong></td>
+        </tr>
+        @if($orden->vehiculo->marca && $orden->vehiculo->modelo)
+        <tr>
+            <td>Marca y Modelo:</td>
+            <td>{{ $orden->vehiculo->marca }} {{ $orden->vehiculo->modelo }}</td>
+        </tr>
+        @endif
+        @if($orden->vehiculo->color)
+        <tr>
+            <td>Color:</td>
+            <td>{{ $orden->vehiculo->color }}</td>
+        </tr>
+        @endif
+        @if($orden->vehiculo->anio)
+        <tr>
+            <td>Año:</td>
+            <td>{{ $orden->vehiculo->anio }}</td>
+        </tr>
+        @endif
+    </table>
     @endif
 
-    <div class="section">
-        <h3>TÉCNICO ASIGNADO</h3>
-        <table>
-            <tr>
-                <td style="width: 25%; font-weight: bold;">Nombre:</td>
-                <td style="width: 75%;">{{ $orden->tecnico->name ?? 'Sin asignar' }}</td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Email:</td>
-                <td>{{ $orden->tecnico->email ?? 'N/A' }}</td>
-            </tr>
-        </table>
-    </div>
+    <div class="section-title">PERSONAL ASIGNADO</div>
+    <table class="info-table">
+        <tr>
+            <td>Técnico Asignado:</td>
+            <td>
+                @if($orden->tecnico)
+                    <strong>{{ $orden->tecnico->name }}</strong>
+                    @if($orden->tecnico->email)
+                        <br><small>{{ $orden->tecnico->email }}</small>
+                    @endif
+                @else
+                    <span style="color: #999;">Sin asignar</span>
+                @endif
+            </td>
+        </tr>
+        @if($orden->grupoTrabajo)
+        <tr>
+            <td>Grupo de Trabajo:</td>
+            <td>
+                <strong>{{ $orden->grupoTrabajo->nombre }}</strong>
+                @if($orden->grupoTrabajo->descripcion)
+                    <br><small>{{ $orden->grupoTrabajo->descripcion }}</small>
+                @endif
+            </td>
+        </tr>
+        @endif
+    </table>
 
-    @if($orden->grupoTrabajo)
-    <div class="section">
-        <h3>GRUPO DE TRABAJO</h3>
-        <table>
-            <tr>
-                <td style="width: 25%; font-weight: bold;">Nombre del Grupo:</td>
-                <td style="width: 75%;">{{ $orden->grupoTrabajo->nombre }}</td>
-            </tr>
-            <tr>
-                <td style="font-weight: bold;">Descripción:</td>
-                <td>{{ $orden->grupoTrabajo->descripcion ?? 'N/A' }}</td>
-            </tr>
-        </table>
+    @if($orden->descripcion_problema)
+    <div class="section-title">DESCRIPCIÓN DEL PROBLEMA</div>
+    <div class="descripcion-box">
+        {{ $orden->descripcion_problema }}
     </div>
     @endif
-
-    <div class="section">
-        <h3>DESCRIPCIÓN DEL TRABAJO</h3>
-        <table>
-            <tr>
-                <td>{{ $orden->descripcion ?? 'Sin descripción' }}</td>
-            </tr>
-        </table>
-    </div>
 
     @if($orden->tareas && $orden->tareas->count() > 0)
-    <div class="section">
-        <h3>TAREAS REALIZADAS</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 50%;">Descripción</th>
-                    <th style="width: 15%;">Estado</th>
-                    <th style="width: 20%;">Fecha Inicio</th>
-                    <th style="width: 15%;">Duración</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($orden->tareas as $tarea)
-                <tr>
-                    <td>{{ $tarea->descripcion }}</td>
-                    <td>
-                        <span class="estado-badge estado-{{ $tarea->estado }}">
-                            {{ ucfirst(str_replace('_', ' ', $tarea->estado)) }}
-                        </span>
-                    </td>
-                    <td>{{ $tarea->fecha_inicio ? \Carbon\Carbon::parse($tarea->fecha_inicio)->format('d/m/Y') : 'N/A' }}</td>
-                    <td>{{ $tarea->duracion_estimada ?? 'N/A' }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+    <div class="section-title">TAREAS ASIGNADAS</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 5%;">#</th>
+                <th style="width: 35%;">Tarea</th>
+                <th style="width: 15%;">Tipo</th>
+                <th style="width: 15%;">Estado</th>
+                <th style="width: 20%;">Asignado a</th>
+                <th style="width: 10%;">Completada</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($orden->tareas as $index => $tarea)
+            <tr>
+                <td class="text-center">{{ $index + 1 }}</td>
+                <td>
+                    <strong>{{ $tarea->nombre }}</strong>
+                    @if($tarea->observaciones)
+                        <br><small style="color: #666;">{{ $tarea->observaciones }}</small>
+                    @endif
+                </td>
+                <td><span class="badge badge-info">{{ ucfirst($tarea->tipo) }}</span></td>
+                <td>
+                    @php
+                        $colorTarea = match($tarea->estado) {
+                            'pendiente' => 'secondary',
+                            'en_proceso' => 'warning',
+                            'completada' => 'success',
+                            default => 'secondary'
+                        };
+                    @endphp
+                    <span class="badge badge-{{ $colorTarea }}">{{ ucfirst($tarea->estado) }}</span>
+                </td>
+                <td>{{ $tarea->empleado ? $tarea->empleado->name : 'Sin asignar' }}</td>
+                <td class="text-center">{{ $tarea->completada ? 'Sí' : 'No' }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    @endif
+
+    @if($orden->observaciones)
+    <div class="section-title">OBSERVACIONES</div>
+    <div class="observaciones-box">
+        {{ $orden->observaciones }}
     </div>
     @endif
 
-    <div class="section">
-        <h3>COSTOS</h3>
-        <div class="total-section">
-            @if($orden->costo_mano_obra)
-            <div class="total-row">
-                <div class="total-label">Mano de Obra:</div>
-                <div class="total-value">$ {{ number_format($orden->costo_mano_obra, 2) }}</div>
-            </div>
-            @endif
-            @if($orden->costo_materiales)
-            <div class="total-row">
-                <div class="total-label">Materiales:</div>
-                <div class="total-value">$ {{ number_format($orden->costo_materiales, 2) }}</div>
-            </div>
-            @endif
-            @if($orden->costo_final)
-            <div class="total-row grand-total">
-                <div class="total-label">TOTAL:</div>
-                <div class="total-value">$ {{ number_format($orden->costo_final, 2) }}</div>
-            </div>
-            @endif
-        </div>
+    @if($orden->motivo_no_terminada)
+    <div class="section-title">MOTIVO DE NO FINALIZACIÓN</div>
+    <div style="background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 12px; margin: 10px 0; font-size: 11px;">
+        {{ $orden->motivo_no_terminada }}
     </div>
+    @endif
 
-    @if($orden->observaciones)
-    <div class="section">
-        <h3>OBSERVACIONES</h3>
-        <table>
-            <tr>
-                <td>{{ $orden->observaciones }}</td>
-            </tr>
-        </table>
+    @if($orden->costo_estimado || $orden->costo_final)
+    <div class="section-title">INFORMACIÓN DE COSTOS</div>
+    <div class="total-section">
+        @if($orden->costo_estimado)
+        <div class="total-row">
+            <div class="total-label">Costo Estimado:</div>
+            <div class="total-value">$ {{ number_format($orden->costo_estimado, 2) }}</div>
+        </div>
+        @endif
+        @if($orden->costo_final)
+        <div class="total-row" style="border-top: 2px solid #007bff; padding-top: 10px; margin-top: 10px;">
+            <div class="total-label" style="color: #007bff; font-size: 14px;">COSTO FINAL:</div>
+            <div class="total-value" style="color: #007bff; font-size: 18px;">$ {{ number_format($orden->costo_final, 2) }}</div>
+        </div>
+        @endif
     </div>
+    @endif
+
+    @if($orden->coordenadas_gps)
+    <div class="section-title">UBICACIÓN GPS</div>
+    <table class="info-table">
+        <tr>
+            <td>Coordenadas GPS:</td>
+            <td>{{ $orden->coordenadas_gps }}</td>
+        </tr>
+    </table>
     @endif
 
     <div class="footer">
-        <p>Generado el {{ now()->format('d/m/Y H:i:s') }}</p>
-        <p>TecnoServi - Sistema de Gestión Profesional</p>
-        <p>Este documento es una representación oficial de la orden de trabajo</p>
+        <p><strong>TecnoServi</strong> - Sistema de Gestión Profesional de Servicios Técnicos</p>
+        <p>Documento generado automáticamente - Para consultas contacte al departamento de servicios</p>
+        <p>Este documento es una representación oficial de la orden de trabajo #{{ $orden->numero_orden }}</p>
     </div>
 </body>
 </html>
