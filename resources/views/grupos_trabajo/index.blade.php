@@ -221,56 +221,9 @@
   </div>
 </div>
 
-<!-- Estadísticas rápidas -->
-<div class="row mt-3">
-  <div class="col-lg-3 col-6">
-    <div class="small-box bg-info">
-      <div class="inner">
-        <h3>{{ $grupos->where('activo', true)->count() }}</h3>
-        <p>Grupos Activos</p>
-      </div>
-      <div class="icon">
-        <i class="fas fa-users"></i>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-3 col-6">
-    <div class="small-box bg-success">
-      <div class="inner">
-        <h3>{{ $grupos->sum('numero_miembros') }}</h3>
-        <p>Total Miembros</p>
-      </div>
-      <div class="icon">
-        <i class="fas fa-user-friends"></i>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-3 col-6">
-    <div class="small-box bg-warning">
-      <div class="inner">
-        <h3>{{ $grupos->sum('ordenes_activas') }}</h3>
-        <p>Órdenes Activas</p>
-      </div>
-      <div class="icon">
-        <i class="fas fa-clipboard-list"></i>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-3 col-6">
-    <div class="small-box bg-secondary">
-      <div class="inner">
-        <h3>{{ $grupos->where('activo', false)->count() }}</h3>
-        <p>Grupos Inactivos</p>
-      </div>
-      <div class="icon">
-        <i class="fas fa-pause"></i>
-      </div>
-    </div>
-  </div>
-</div>
 @endsection
 
-@push('scripts')
+@section('js')
 <script>
 $(document).ready(function() {
   // Confirmación para cambios de estado
@@ -278,11 +231,11 @@ $(document).ready(function() {
     const form = $(this);
     const isActive = form.find('button').hasClass('btn-secondary');
     const action = isActive ? 'desactivar' : 'activar';
-    
+
     if (!confirm(`¿Confirmar ${action} el grupo?`)) {
       e.preventDefault();
     }
   });
 });
 </script>
-@endpush
+@endsection

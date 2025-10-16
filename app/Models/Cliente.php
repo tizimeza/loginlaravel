@@ -54,6 +54,14 @@ class Cliente extends Model
     }
 
     /**
+     * Alias para la relación ordenesTrabajos (singular)
+     */
+    public function ordenesTrabajo()
+    {
+        return $this->hasMany(OrdenTrabajo::class);
+    }
+
+    /**
      * Scope para clientes premium
      */
     public function scopePremium($query)

@@ -51,23 +51,53 @@
           </div>
         @else
           <div class="table-responsive">
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped table-hover">
               <thead>
                 <tr>
-                  <th>ID</th>
-                  <th>Nombre</th>
-                  <th>Acciones</th>
+                  <th width="5%">ID</th>
+                  <th width="35%">Nombre</th>
+                  <th width="20%">Tipo</th>
+                  <th width="15%">Estado</th>
+                  <th width="25%">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 @foreach($tareas as $tarea)
                   <tr>
                     <td>{{ $tarea->id }}</td>
-                    <td class="{{ $tarea->completada ? 'text-decoration-line-through text-muted' : '' }}">
-                      {{ $tarea->nombre }}
-                      @if($tarea->completada)
-                        <span class="badge badge-success ml-2">Procesando</span>
-                      @endif
+                    <td>
+                      <strong>{{ $tarea->nombre }}</strong>
+                    </td>
+                    <td>
+                      @php
+                        $tipoBadgeColors = [
+                          'instalacion' => 'primary',
+                          'reconexion' => 'info',
+                          'service' => 'warning',
+                          'desconexion' => 'danger',
+                          'mantenimiento' => 'success',
+                          'soporte' => 'secondary'
+                        ];
+                        $badgeColor = $tipoBadgeColors[$tarea->tipo] ?? 'secondary';
+                      @endphp
+                      <span class="badge badge-{{ $badgeColor }}">
+                        {{ $tipos[$tarea->tipo] ?? $tarea->tipo }}
+                      </span>
+                    </td>
+                    <td>
+                      @php
+                        $estadoBadgeColors = [
+                          'pendiente' => 'secondary',
+                          'asignada' => 'info',
+                          'en_proceso' => 'warning',
+                          'completada' => 'success',
+                          'cancelada' => 'danger'
+                        ];
+                        $estadoColor = $estadoBadgeColors[$tarea->estado] ?? 'secondary';
+                      @endphp
+                      <span class="badge badge-{{ $estadoColor }}">
+                        {{ $estados[$tarea->estado] ?? $tarea->estado }}
+                      </span>
                     </td>
                     <td>
                       <a href="{{ route('tareas.edit', $tarea->id) }}" class="btn btn-warning btn-sm">
@@ -76,8 +106,8 @@
                       <form action="{{ route('tareas.destroy', $tarea->id) }}" method="POST" class="d-inline ml-1">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm" 
-                                onclick="return confirm('¿Estás seguro de eliminar esta tarea?')">
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('¿Estás seguro de eliminar esta tarea plantilla?')">
                           <i class="fas fa-trash"></i> Eliminar
                         </button>
                       </form>
@@ -109,15 +139,55 @@
         @csrf
         <div class="modal-body">
           <div class="form-group">
-            <label for="nombre">Nombre de la Tarea</label>
-            <input type="text" 
-                   class="form-control @error('nombre') is-invalid @enderror" 
+            <label for="nombre">Nombre de la Tarea *</label>
+            <input type="text"
+                   class="form-control @error('nombre') is-invalid @enderror"
                    id="nombre"
-                   name="nombre" 
+                   name="nombre"
                    placeholder="Ingresa el nombre de la tarea"
                    value="{{ old('nombre') }}"
                    required>
             @error('nombre')
+              <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+              </span>
+            @enderror
+          </div>
+
+          <div class="form-group">
+            <label for="tipo">Tipo de Tarea *</label>
+            <select class="form-control @error('tipo') is-invalid @enderror"
+                    id="tipo"
+                    name="tipo"
+                    required>
+              <option value="">Seleccionar tipo...</option>
+              @foreach($tipos as $key => $tipo)
+                <option value="{{ $key }}" {{ old('tipo') == $key ? 'selected' : '' }}>
+                  {{ $tipo }}
+                </option>
+              @endforeach
+            </select>
+            @error('tipo')
+              <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+              </span>
+            @enderror
+          </div>
+
+          <div class="form-group">
+            <label for="estado">Estado *</label>
+            <select class="form-control @error('estado') is-invalid @enderror"
+                    id="estado"
+                    name="estado"
+                    required>
+              <option value="">Seleccionar estado...</option>
+              @foreach($estados as $key => $estado)
+                <option value="{{ $key }}" {{ old('estado', 'pendiente') == $key ? 'selected' : '' }}>
+                  {{ $estado }}
+                </option>
+              @endforeach
+            </select>
+            @error('estado')
               <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
               </span>

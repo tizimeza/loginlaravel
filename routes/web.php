@@ -7,6 +7,9 @@ use App\Http\Controllers\OrdenTrabajoController;
 use App\Http\Controllers\GrupoTrabajoController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +68,30 @@ Route::middleware(['auth'])->group(function () {
     // Rutas para Clientes
     Route::resource('clientes', ClienteController::class)->parameters(['clientes' => 'cliente']);
     Route::patch('clientes/{cliente}/toggle_activo', [ClienteController::class, 'toggleActivo'])->name('clientes.toggle_activo');
+
+    // Rutas para Usuarios
+    Route::resource('users', UserController::class);
+
+    // Rutas para Roles y Permisos
+    Route::resource('roles', RoleController::class);
+
+    // Rutas para Reportes PDF
+    Route::prefix('reportes')->name('reportes.')->group(function () {
+        // PDF de orden de trabajo individual
+        Route::get('orden-trabajo/{id}/pdf', [ReporteController::class, 'ordenTrabajoPDF'])->name('orden-trabajo-pdf');
+
+        // PDF de inventario completo
+        Route::get('inventario/pdf', [ReporteController::class, 'inventarioPDF'])->name('inventario-pdf');
+
+        // PDF de órdenes por periodo
+        Route::get('ordenes-periodo/pdf', [ReporteController::class, 'ordenesPorPeriodoPDF'])->name('ordenes-periodo-pdf');
+
+        // PDF de clientes
+        Route::get('clientes/pdf', [ReporteController::class, 'clientesPDF'])->name('clientes-pdf');
+
+        // PDF de vehículos
+        Route::get('vehiculos/pdf', [ReporteController::class, 'vehiculosPDF'])->name('vehiculos-pdf');
+    });
 });
 
 Auth::routes();

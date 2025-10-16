@@ -1,18 +1,45 @@
+# Dependencias
 /node_modules
+/vendor
+
+# Laravel
 /public/build
 /public/hot
 /public/storage
 /storage/*.key
-/vendor
 .env
 .env.backup
 .env.production
 .phpunit.result.cache
+
+# Configuraciones locales
 Homestead.json
 Homestead.yaml
 auth.json
+
+# Logs
 npm-debug.log
 yarn-error.log
+*.log
+
+# IDE
 /.fleet
 /.idea
 /.vscode
+*.sublime-project
+*.sublime-workspace
+
+# Sistema Operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Testing
+/coverage
+/.phpunit.cache
+
+# Backups y temporales
+*.bak
+*.swp
+*.swo
+*~

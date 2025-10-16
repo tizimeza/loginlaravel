@@ -17,8 +17,19 @@ class VehiculoController extends Controller
      */
     public function index()
     {
-        $vehiculos = Vehiculo::with('modelo.marca')->paginate(10);
-        return view('vehiculos.index', compact('vehiculos'));
+        // Obtener todos los vehículos para DataTables (sin paginación de Laravel)
+        $vehiculos = Vehiculo::with('modelo.marca')->get();
+
+        // Calcular estadísticas
+        $stats = [
+            'disponibles' => $vehiculos->where('estado', 'disponible')->count(),
+            'en_uso' => $vehiculos->where('estado', 'en_uso')->count(),
+            'mantenimiento' => $vehiculos->where('estado', 'mantenimiento')->count(),
+            'fuera_servicio' => $vehiculos->where('estado', 'fuera_servicio')->count(),
+            'total' => $vehiculos->count()
+        ];
+
+        return view('vehiculos.index', compact('vehiculos', 'stats'));
     }
 
     /**

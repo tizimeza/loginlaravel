@@ -37,11 +37,11 @@
           @endif
 
           <div class="form-group">
-            <label for="nombre">Nombre de la Tarea</label>
-            <input type="text" 
-                   class="form-control @error('nombre') is-invalid @enderror" 
+            <label for="nombre">Nombre de la Tarea *</label>
+            <input type="text"
+                   class="form-control @error('nombre') is-invalid @enderror"
                    id="nombre"
-                   name="nombre" 
+                   name="nombre"
                    placeholder="Ingresa el nombre de la tarea"
                    value="{{ old('nombre', $tarea->nombre) }}"
                    required>
@@ -53,15 +53,43 @@
           </div>
 
           <div class="form-group">
-            <div class="custom-control custom-checkbox">
-              <input class="custom-control-input" 
-                     type="checkbox" 
-                     id="completada" 
-                     name="completada" 
-                     value="1"
-                     {{ old('completada', $tarea->completada) ? 'checked' : '' }}>
-              <label for="completada" class="custom-control-label">Tarea completada</label>
-            </div>
+            <label for="tipo">Tipo de Tarea *</label>
+            <select class="form-control @error('tipo') is-invalid @enderror"
+                    id="tipo"
+                    name="tipo"
+                    required>
+              <option value="">Seleccionar tipo...</option>
+              @foreach($tipos as $key => $tipo)
+                <option value="{{ $key }}" {{ old('tipo', $tarea->tipo) == $key ? 'selected' : '' }}>
+                  {{ $tipo }}
+                </option>
+              @endforeach
+            </select>
+            @error('tipo')
+              <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+              </span>
+            @enderror
+          </div>
+
+          <div class="form-group">
+            <label for="estado">Estado *</label>
+            <select class="form-control @error('estado') is-invalid @enderror"
+                    id="estado"
+                    name="estado"
+                    required>
+              <option value="">Seleccionar estado...</option>
+              @foreach($estados as $key => $estado)
+                <option value="{{ $key }}" {{ old('estado', $tarea->estado) == $key ? 'selected' : '' }}>
+                  {{ $estado }}
+                </option>
+              @endforeach
+            </select>
+            @error('estado')
+              <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+              </span>
+            @enderror
           </div>
         </div>
         <!-- /.card-body -->

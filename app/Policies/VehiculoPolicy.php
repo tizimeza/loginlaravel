@@ -12,83 +12,64 @@ class VehiculoPolicy
 
     /**
      * Determine whether the user can view any models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function viewAny(User $user)
     {
-        //
+        // Todos pueden ver vehículos
+        return true;
     }
 
     /**
      * Determine whether the user can view the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Vehiculo  $vehiculo
-     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function view(User $user, Vehiculo $vehiculo)
     {
-        //
+        // Todos pueden ver un vehículo específico
+        return true;
     }
 
     /**
      * Determine whether the user can create models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function create(User $user)
     {
-        //
+        // Solo Admin y Supervisor pueden crear vehículos
+        return $user->hasAnyRole(['admin', 'supervisor']);
     }
 
     /**
      * Determine whether the user can update the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Vehiculo  $vehiculo
-     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function update(User $user, Vehiculo $vehiculo)
     {
-        //
+        // Solo Admin y Supervisor pueden editar vehículos
+        return $user->hasAnyRole(['admin', 'supervisor']);
     }
 
     /**
      * Determine whether the user can delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Vehiculo  $vehiculo
-     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function delete(User $user, Vehiculo $vehiculo)
     {
-        //
+        // Solo Admin puede eliminar vehículos
+        return $user->hasRole('admin');
     }
 
     /**
      * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Vehiculo  $vehiculo
-     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function restore(User $user, Vehiculo $vehiculo)
     {
-        //
+        // Solo Admin puede restaurar vehículos
+        return $user->hasRole('admin');
     }
 
     /**
      * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Vehiculo  $vehiculo
-     * @return \Illuminate\Auth\Access\Response|bool
      */
     public function forceDelete(User $user, Vehiculo $vehiculo)
     {
-        //
+        // Solo Admin puede eliminar permanentemente
+        return $user->hasRole('admin');
     }
 }

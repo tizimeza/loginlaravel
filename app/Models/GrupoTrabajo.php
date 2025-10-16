@@ -134,11 +134,11 @@ class GrupoTrabajo extends Model
     }
 
     /**
-     * Accessor para obtener el skill formateado
+     * Accessor para obtener la especialidad formateada
      */
-    public function getSkillFormateadoAttribute()
+    public function getEspecialidadFormateadaAttribute()
     {
-        return self::SKILLS[$this->skill] ?? $this->skill;
+        return self::ESPECIALIDADES[$this->especialidad] ?? $this->especialidad;
     }
 
     /**

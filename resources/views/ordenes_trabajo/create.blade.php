@@ -11,11 +11,11 @@
 @section('content')
 <div class="row">
   <div class="col-12">
-    <div class="card">
+    <div class="card card-primary">
       <div class="card-header">
         <h3 class="card-title">
           <i class="fas fa-plus mr-1"></i>
-          Nueva Orden de Trabajo
+          Crear Nueva Orden de Trabajo
         </h3>
         <div class="card-tools">
           <a href="{{ route('ordenes_trabajo.index') }}" class="btn btn-secondary btn-sm">
@@ -26,10 +26,12 @@
 
       <form action="{{ route('ordenes_trabajo.store') }}" method="POST">
         @csrf
+
         <div class="card-body">
           @if ($errors->any())
-            <div class="alert alert-danger">
-              <h5><i class="icon fas fa-ban"></i> Error!</h5>
+            <div class="alert alert-danger alert-dismissible">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <h5><i class="icon fas fa-ban"></i> Errores en el formulario</h5>
               <ul class="mb-0">
                 @foreach ($errors->all() as $error)
                   <li>{{ $error }}</li>
@@ -39,27 +41,24 @@
           @endif
 
           <div class="row">
-            <!-- Información del Cliente -->
+            <!-- CLIENTE -->
             <div class="col-md-6">
-              <div class="card card-outline card-info">
+              <div class="card card-outline card-primary">
                 <div class="card-header">
-                  <h3 class="card-title"><i class="fas fa-user"></i> Información del Cliente</h3>
+                  <h3 class="card-title">Cliente</h3>
                 </div>
                 <div class="card-body">
                   <div class="form-group">
                     <label for="cliente_id">Seleccionar Cliente <span class="text-danger">*</span></label>
                     <select class="form-control @error('cliente_id') is-invalid @enderror"
                             id="cliente_id" name="cliente_id" required>
-                      <option value="">Seleccionar cliente</option>
+                      <option value="">-- Seleccionar --</option>
                       @foreach($clientes as $cliente)
                         <option value="{{ $cliente->id }}"
                                 data-telefono="{{ $cliente->telefono }}"
                                 data-email="{{ $cliente->email }}"
                                 {{ old('cliente_id') == $cliente->id ? 'selected' : '' }}>
-                          {{ $cliente->nombre }} ({{ $cliente->tipo_cliente_formateado }})
-                          @if($cliente->es_premium)
-                            <span class="badge badge-warning ml-1">Premium</span>
-                          @endif
+                          {{ $cliente->nombre }} - {{ $cliente->tipo_cliente_formateado }}
                         </option>
                       @endforeach
                     </select>
@@ -68,50 +67,36 @@
                     @enderror
                   </div>
 
-                    <div class="form-group">
-                      <label for="cliente_telefono">Teléfono</label>
-                      <input type="text" class="form-control @error('cliente_telefono') is-invalid @enderror"
-                             id="cliente_telefono" value="{{ old('cliente_telefono') }}" readonly>
-                      <input type="hidden" name="cliente_telefono" value="{{ old('cliente_telefono') }}">
-                      @error('cliente_telefono')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                      @enderror
-                    </div>
+                  <div class="form-group">
+                    <label for="cliente_telefono">Teléfono</label>
+                    <input type="text" class="form-control" id="cliente_telefono"
+                           name="cliente_telefono" value="{{ old('cliente_telefono') }}" readonly>
+                  </div>
 
-                    <div class="form-group">
-                      <label for="cliente_email">Email</label>
-                      <input type="email" class="form-control @error('cliente_email') is-invalid @enderror"
-                             id="cliente_email" value="{{ old('cliente_email') }}" readonly>
-                      <input type="hidden" name="cliente_email" value="{{ old('cliente_email') }}">
-                      @error('cliente_email')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                      @enderror
-                    </div>
+                  <div class="form-group">
+                    <label for="cliente_email">Email</label>
+                    <input type="email" class="form-control" id="cliente_email"
+                           name="cliente_email" value="{{ old('cliente_email') }}" readonly>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Información del Vehículo y Orden -->
+            <!-- VEHÍCULO Y ASIGNACIÓN -->
             <div class="col-md-6">
               <div class="card card-outline card-success">
                 <div class="card-header">
-                  <h3 class="card-title"><i class="fas fa-car"></i> Información del Vehículo</h3>
+                  <h3 class="card-title">Vehículo y Asignación</h3>
                 </div>
                 <div class="card-body">
                   <div class="form-group">
                     <label for="vehiculo_id">Vehículo <span class="text-danger">*</span></label>
-                    <select class="form-control @error('vehiculo_id') is-invalid @enderror" 
+                    <select class="form-control @error('vehiculo_id') is-invalid @enderror"
                             id="vehiculo_id" name="vehiculo_id" required>
-                      <option value="">Seleccionar vehículo</option>
+                      <option value="">-- Seleccionar --</option>
                       @foreach($vehiculos as $vehiculo)
                         <option value="{{ $vehiculo->id }}" {{ old('vehiculo_id') == $vehiculo->id ? 'selected' : '' }}>
-                          {{ $vehiculo->patente }} - 
-                          @if($vehiculo->marca && $vehiculo->modelo)
-                            {{ $vehiculo->marca }} {{ $vehiculo->modelo }}
-                          @else
-                            Sin modelo
-                          @endif
-                          ({{ $vehiculo->color }}, {{ $vehiculo->anio }})
+                          {{ $vehiculo->patente }} - {{ $vehiculo->marca }} {{ $vehiculo->modelo }}
                         </option>
                       @endforeach
                     </select>
@@ -121,154 +106,8 @@
                   </div>
 
                   <div class="form-group">
-                    <label for="numero_orden_display">Número de Orden</label>
-                    <input type="text" class="form-control"
-                           id="numero_orden_display" value="Se generará automáticamente"
-                           readonly disabled>
-                    <small class="form-text text-muted">El número se genera automáticamente</small>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="estado">Estado <span class="text-danger">*</span></label>
-                        <select class="form-control @error('estado') is-invalid @enderror" 
-                                id="estado" name="estado" required>
-                          @foreach($estados as $key => $estado)
-                            <option value="{{ $key }}" {{ old('estado', 'pendiente') == $key ? 'selected' : '' }}>
-                              {{ $estado }}
-                            </option>
-                          @endforeach
-                        </select>
-                        @error('estado')
-                          <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                      </div>
-                    </div>
-
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="prioridad">Prioridad <span class="text-danger">*</span></label>
-                        <select class="form-control @error('prioridad') is-invalid @enderror" 
-                                id="prioridad" name="prioridad" required>
-                          @foreach($prioridades as $key => $prioridad)
-                            <option value="{{ $key }}" {{ old('prioridad', 'media') == $key ? 'selected' : '' }}>
-                              {{ $prioridad }}
-                            </option>
-                          @endforeach
-                        </select>
-                        @error('prioridad')
-                          <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Gestión de Tareas -->
-          <div class="row">
-            <div class="col-12">
-              <div class="card card-outline card-secondary">
-                <div class="card-header">
-                  <h3 class="card-title"><i class="fas fa-tasks"></i> Tareas a Asignar</h3>
-                  <div class="card-tools">
-                    <button type="button" class="btn btn-success btn-sm" id="btnAgregarTarea">
-                      <i class="fas fa-plus"></i> Agregar Tarea
-                    </button>
-                  </div>
-                </div>
-                <div class="card-body">
-                  <div id="tareas-container">
-                    <!-- Aquí se agregarán las tareas dinámicamente -->
-                    <div class="text-center py-4" id="no-tareas-message">
-                      <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
-                      <h5>No hay tareas asignadas</h5>
-                      <p class="text-muted">Haz clic en "Agregar Tarea" para seleccionar tareas para esta orden.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <!-- Descripción del Problema -->
-            <div class="col-md-8">
-              <div class="card card-outline card-warning">
-                <div class="card-header">
-                  <h3 class="card-title"><i class="fas fa-exclamation-triangle"></i> Descripción del Problema</h3>
-                </div>
-                <div class="card-body">
-                  <div class="form-group">
-                    <label for="descripcion_problema">Descripción del Problema <span class="text-danger">*</span></label>
-                    <textarea class="form-control @error('descripcion_problema') is-invalid @enderror" 
-                              id="descripcion_problema" name="descripcion_problema" rows="4" required>{{ old('descripcion_problema') }}</textarea>
-                    @error('descripcion_problema')
-                      <span class="invalid-feedback">{{ $message }}</span>
-                    @enderror
-                  </div>
-
-                  <div class="form-group">
-                    <label for="observaciones">Observaciones Adicionales</label>
-                    <textarea class="form-control @error('observaciones') is-invalid @enderror" 
-                              id="observaciones" name="observaciones" rows="3">{{ old('observaciones') }}</textarea>
-                    @error('observaciones')
-                      <span class="invalid-feedback">{{ $message }}</span>
-                    @enderror
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Fechas y Costos -->
-            <div class="col-md-4">
-              <div class="card card-outline card-primary">
-                <div class="card-header">
-                  <h3 class="card-title"><i class="fas fa-calendar-alt"></i> Fechas y Costos</h3>
-                </div>
-                <div class="card-body">
-                  <div class="form-group">
-                    <label for="fecha_ingreso">Fecha de Ingreso <span class="text-danger">*</span></label>
-                    <input type="datetime-local" class="form-control @error('fecha_ingreso') is-invalid @enderror" 
-                           id="fecha_ingreso" name="fecha_ingreso" 
-                           value="{{ old('fecha_ingreso', now()->format('Y-m-d\TH:i')) }}" required>
-                    @error('fecha_ingreso')
-                      <span class="invalid-feedback">{{ $message }}</span>
-                    @enderror
-                  </div>
-
-                  <div class="form-group">
-                    <label for="fecha_estimada_entrega">Fecha Estimada de Entrega</label>
-                    <input type="datetime-local" class="form-control @error('fecha_estimada_entrega') is-invalid @enderror" 
-                           id="fecha_estimada_entrega" name="fecha_estimada_entrega" 
-                           value="{{ old('fecha_estimada_entrega') }}">
-                    @error('fecha_estimada_entrega')
-                      <span class="invalid-feedback">{{ $message }}</span>
-                    @enderror
-                  </div>
-
-                  <div class="form-group">
-                    <label for="costo_estimado">Costo Estimado</label>
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">$</span>
-                      </div>
-                      <input type="number" step="0.01" min="0" 
-                             class="form-control @error('costo_estimado') is-invalid @enderror" 
-                             id="costo_estimado" name="costo_estimado" 
-                             value="{{ old('costo_estimado') }}">
-                      @error('costo_estimado')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                      @enderror
-                    </div>
-                  </div>
-
-                  <div class="form-group">
                     <label for="user_id">Técnico Asignado</label>
-                    <select class="form-control @error('user_id') is-invalid @enderror" 
+                    <select class="form-control @error('user_id') is-invalid @enderror"
                             id="user_id" name="user_id">
                       <option value="">Sin asignar</option>
                       @foreach($tecnicos as $tecnico)
@@ -281,6 +120,109 @@
                       <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
                   </div>
+
+                  <div class="form-group">
+                    <label for="prioridad">Prioridad <span class="text-danger">*</span></label>
+                    <select class="form-control @error('prioridad') is-invalid @enderror"
+                            id="prioridad" name="prioridad" required>
+                      @foreach($prioridades as $key => $prioridad)
+                        <option value="{{ $key }}" {{ old('prioridad', 'media') == $key ? 'selected' : '' }}>
+                          {{ $prioridad }}
+                        </option>
+                      @endforeach
+                    </select>
+                    @error('prioridad')
+                      <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- DESCRIPCIÓN -->
+            <div class="col-md-8">
+              <div class="card card-outline card-warning">
+                <div class="card-header">
+                  <h3 class="card-title">Descripción del Problema</h3>
+                </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="descripcion_problema">Descripción <span class="text-danger">*</span></label>
+                    <textarea class="form-control @error('descripcion_problema') is-invalid @enderror"
+                              id="descripcion_problema" name="descripcion_problema" rows="4" required>{{ old('descripcion_problema') }}</textarea>
+                    @error('descripcion_problema')
+                      <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                  </div>
+
+                  <div class="form-group">
+                    <label for="observaciones">Observaciones</label>
+                    <textarea class="form-control @error('observaciones') is-invalid @enderror"
+                              id="observaciones" name="observaciones" rows="3">{{ old('observaciones') }}</textarea>
+                    @error('observaciones')
+                      <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- FECHAS Y COSTOS -->
+            <div class="col-md-4">
+              <div class="card card-outline card-info">
+                <div class="card-header">
+                  <h3 class="card-title">Fechas y Costos</h3>
+                </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="fecha_ingreso">Fecha Ingreso <span class="text-danger">*</span></label>
+                    <input type="datetime-local" class="form-control @error('fecha_ingreso') is-invalid @enderror"
+                           id="fecha_ingreso" name="fecha_ingreso"
+                           value="{{ old('fecha_ingreso', now()->format('Y-m-d\TH:i')) }}" required>
+                    @error('fecha_ingreso')
+                      <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                  </div>
+
+                  <div class="form-group">
+                    <label for="fecha_estimada_entrega">Fecha Estimada</label>
+                    <input type="datetime-local" class="form-control @error('fecha_estimada_entrega') is-invalid @enderror"
+                           id="fecha_estimada_entrega" name="fecha_estimada_entrega"
+                           value="{{ old('fecha_estimada_entrega') }}">
+                    @error('fecha_estimada_entrega')
+                      <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                  </div>
+
+                  <div class="form-group">
+                    <label for="costo_estimado">Costo Estimado</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">$</span>
+                      </div>
+                      <input type="number" step="0.01" min="0" class="form-control @error('costo_estimado') is-invalid @enderror"
+                             id="costo_estimado" name="costo_estimado" value="{{ old('costo_estimado') }}">
+                    </div>
+                    @error('costo_estimado')
+                      <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                  </div>
+
+                  <div class="form-group">
+                    <label for="estado">Estado</label>
+                    <select class="form-control @error('estado') is-invalid @enderror" id="estado" name="estado">
+                      @foreach($estados as $key => $estado)
+                        <option value="{{ $key }}" {{ old('estado', 'pendiente') == $key ? 'selected' : '' }}>
+                          {{ $estado }}
+                        </option>
+                      @endforeach
+                    </select>
+                    @error('estado')
+                      <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                  </div>
                 </div>
               </div>
             </div>
@@ -288,10 +230,10 @@
         </div>
 
         <div class="card-footer">
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-save"></i> Crear Orden de Trabajo
+          <button type="submit" class="btn btn-success btn-lg">
+            <i class="fas fa-save"></i> CREAR ORDEN DE TRABAJO
           </button>
-          <a href="{{ route('ordenes_trabajo.index') }}" class="btn btn-secondary">
+          <a href="{{ route('ordenes_trabajo.index') }}" class="btn btn-secondary btn-lg">
             <i class="fas fa-times"></i> Cancelar
           </a>
         </div>
@@ -299,302 +241,41 @@
     </div>
   </div>
 </div>
-
-<!-- Modal para Agregar Tarea -->
-<div class="modal fade" id="agregarTareaModal" tabindex="-1" role="dialog" aria-labelledby="agregarTareaModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="agregarTareaModalLabel">
-          <i class="fas fa-plus"></i> Agregar Tarea a la Orden
-        </h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form id="agregarTareaForm">
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="tarea_plantilla_modal">Seleccionar Tarea Plantilla <span class="text-danger">*</span></label>
-            <select class="form-control" id="tarea_plantilla_modal" required>
-              <option value="">Selecciona una tarea...</option>
-              <!-- Las opciones se cargarán vía AJAX -->
-            </select>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="empleado_tarea_modal">Asignar a Técnico</label>
-                <select class="form-control" id="empleado_tarea_modal">
-                  <option value="">Seleccionar técnico...</option>
-                  @foreach(\App\Models\User::all() as $user)
-                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                  @endforeach
-                </select>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="form-group">
-                <label for="movil_tarea_modal">Asignar a Grupo de Trabajo</label>
-                <select class="form-control" id="movil_tarea_modal">
-                  <option value="">Seleccionar grupo...</option>
-                  @foreach(\App\Models\GrupoTrabajo::where('activo', true)->get() as $grupo)
-                    <option value="{{ $grupo->id }}">{{ $grupo->nombre }}</option>
-                  @endforeach
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="observaciones_tarea_modal">Observaciones</label>
-            <textarea class="form-control" id="observaciones_tarea_modal" rows="2"
-                      placeholder="Observaciones específicas para esta tarea..."></textarea>
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">
-            <i class="fas fa-times"></i> Cancelar
-          </button>
-          <button type="submit" class="btn btn-success" id="btnConfirmarTarea">
-            <i class="fas fa-plus"></i> Agregar Tarea
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- Template para tareas dinámicas -->
-<template id="tarea-template">
-  <div class="tarea-item border rounded p-3 mb-3 bg-light" data-tarea-id="">
-    <div class="row">
-      <div class="col-md-6">
-        <h6 class="tarea-nombre text-primary"></h6>
-        <small class="text-muted tarea-tipo"></small>
-      </div>
-      <div class="col-md-4">
-        <div class="form-group mb-1">
-          <small class="text-muted d-block">Técnico:</small>
-          <select class="form-control form-control-sm tarea-empleado">
-            <option value="">Sin asignar</option>
-            @foreach(\App\Models\User::all() as $user)
-              <option value="{{ $user->id }}">{{ $user->name }}</option>
-            @endforeach
-          </select>
-        </div>
-        <div class="form-group mb-1">
-          <small class="text-muted d-block">Grupo:</small>
-          <select class="form-control form-control-sm tarea-movil">
-            <option value="">Sin grupo</option>
-            @foreach(\App\Models\GrupoTrabajo::where('activo', true)->get() as $grupo)
-              <option value="{{ $grupo->id }}">{{ $grupo->nombre }}</option>
-            @endforeach
-          </select>
-        </div>
-      </div>
-      <div class="col-md-2">
-        <button type="button" class="btn btn-danger btn-sm btn-block eliminar-tarea">
-          <i class="fas fa-trash"></i>
-        </button>
-      </div>
-    </div>
-    <!-- Campos ocultos para el formulario -->
-    <input type="hidden" class="tarea-plantilla-id" name="tareas[0][tarea_plantilla_id]" value="">
-    <input type="hidden" class="tarea-empleado-hidden" name="tareas[0][empleado_id]" value="">
-    <input type="hidden" class="tarea-movil-hidden" name="tareas[0][movil_id]" value="">
-    <input type="hidden" class="tarea-observaciones-hidden" name="tareas[0][observaciones]" value="">
-  </div>
-</template>
-
 @endsection
 
 @push('scripts')
 <script>
-let tareaIndex = 0; // Contador para los índices de tareas
-
 $(document).ready(function() {
-  // Auto-completar cliente cuando se selecciona
+  // Auto-completar datos del cliente
   $('#cliente_id').on('change', function() {
-    let selectedOption = $(this).find('option:selected');
-    let telefono = selectedOption.data('telefono') || '';
-    let email = selectedOption.data('email') || '';
-
-    console.log('Cliente seleccionado:', selectedOption.val(), 'Teléfono:', telefono, 'Email:', email);
+    var selectedOption = $(this).find('option:selected');
+    var telefono = selectedOption.data('telefono') || '';
+    var email = selectedOption.data('email') || '';
 
     $('#cliente_telefono').val(telefono);
     $('#cliente_email').val(email);
-
-    // Actualizar campos ocultos también
-    $('input[name="cliente_telefono"]').val(telefono);
-    $('input[name="cliente_email"]').val(email);
   });
 
-  // Auto-completar fecha estimada cuando se selecciona fecha de ingreso
+  // Auto-calcular fecha estimada (7 días después)
   $('#fecha_ingreso').on('change', function() {
     if (this.value && !$('#fecha_estimada_entrega').val()) {
-      let fechaIngreso = new Date(this.value);
-      fechaIngreso.setDate(fechaIngreso.getDate() + 7); // Agregar 7 días por defecto
+      var fechaIngreso = new Date(this.value);
+      fechaIngreso.setDate(fechaIngreso.getDate() + 7);
 
-      let year = fechaIngreso.getFullYear();
-      let month = String(fechaIngreso.getMonth() + 1).padStart(2, '0');
-      let day = String(fechaIngreso.getDate()).padStart(2, '0');
-      let hours = String(fechaIngreso.getHours()).padStart(2, '0');
-      let minutes = String(fechaIngreso.getMinutes()).padStart(2, '0');
+      var year = fechaIngreso.getFullYear();
+      var month = String(fechaIngreso.getMonth() + 1).padStart(2, '0');
+      var day = String(fechaIngreso.getDate()).padStart(2, '0');
+      var hours = String(fechaIngreso.getHours()).padStart(2, '0');
+      var minutes = String(fechaIngreso.getMinutes()).padStart(2, '0');
 
-      $('#fecha_estimada_entrega').val(`${year}-${month}-${day}T${hours}:${minutes}`);
+      $('#fecha_estimada_entrega').val(year + '-' + month + '-' + day + 'T' + hours + ':' + minutes);
     }
   });
 
-  // Select2 para mejor UX en selects
-  $('#cliente_id, #vehiculo_id, #user_id').select2({
-    theme: 'bootstrap4',
-    width: '100%'
-  });
-
-  // Cargar datos del cliente si hay un valor seleccionado por defecto
+  // Trigger change si hay cliente seleccionado
   if ($('#cliente_id').val()) {
     $('#cliente_id').trigger('change');
   }
-
-  // Abrir modal para agregar tarea
-  $('#btnAgregarTarea').on('click', function() {
-    cargarTareasDisponibles();
-    $('#agregarTareaModal').modal('show');
-  });
-
-  // Cargar tareas disponibles en el modal
-  function cargarTareasDisponibles() {
-    $.ajax({
-      url: '{{ route("tareas.disponibles") }}',
-      method: 'GET',
-      success: function(response) {
-        let options = '<option value="">Selecciona una tarea...</option>';
-        if (Array.isArray(response) && response.length > 0) {
-          response.forEach(function(tarea) {
-            options += `<option value="${tarea.id}" data-nombre="${tarea.nombre}" data-tipo="${tarea.tipo}">${tarea.nombre} (${tarea.tipo})</option>`;
-          });
-        } else {
-          options += '<option value="" disabled>No hay tareas disponibles</option>';
-        }
-        $('#tarea_plantilla_modal').html(options);
-      },
-      error: function(xhr, status, error) {
-        console.error('Error al cargar tareas:', error, xhr.responseText);
-        $('#tarea_plantilla_modal').html('<option value="" disabled>Error al cargar tareas</option>');
-        alert('Error al cargar las tareas disponibles. Revisa la consola para más detalles.');
-      }
-    });
-  }
-
-  // Agregar tarea al formulario desde el modal
-  $('#agregarTareaForm').on('submit', function(e) {
-    e.preventDefault();
-
-    const tareaId = $('#tarea_plantilla_modal').val();
-    const tareaOption = $('#tarea_plantilla_modal option:selected');
-    const tareaNombre = tareaOption.data('nombre');
-    const tareaTipo = tareaOption.data('tipo');
-
-    if (!tareaId) {
-      alert('Debes seleccionar una tarea');
-      return;
-    }
-
-    // Verificar si la tarea ya está agregada
-    if ($(`.tarea-item[data-tarea-id="${tareaId}"]`).length > 0) {
-      alert('Esta tarea ya está agregada a la orden');
-      return;
-    }
-
-    // Crear tarea de forma más simple
-    const nuevaTareaHTML = `
-      <div class="tarea-item border rounded p-3 mb-3 bg-light" data-tarea-id="${tareaId}">
-        <div class="row">
-          <div class="col-md-6">
-            <h6 class="tarea-nombre text-primary">${tareaNombre}</h6>
-            <small class="text-muted tarea-tipo">${tareaTipo}</small>
-          </div>
-          <div class="col-md-4">
-            <div class="form-group mb-1">
-              <small class="text-muted d-block">Técnico:</small>
-              <select class="form-control form-control-sm tarea-empleado">
-                <option value="">Sin asignar</option>
-                @foreach(\App\Models\User::all() as $user)
-                  <option value="{{ $user->id }}" ${$('#empleado_tarea_modal').val() == '{{ $user->id }}' ? 'selected' : ''}>{{ $user->name }}</option>
-                @endforeach
-              </select>
-            </div>
-            <div class="form-group mb-1">
-              <small class="text-muted d-block">Grupo:</small>
-              <select class="form-control form-control-sm tarea-movil">
-                <option value="">Sin grupo</option>
-                @foreach(\App\Models\GrupoTrabajo::where('activo', true)->get() as $grupo)
-                  <option value="{{ $grupo->id }}" ${$('#movil_tarea_modal').val() == '{{ $grupo->id }}' ? 'selected' : ''}>{{ $grupo->nombre }}</option>
-                @endforeach
-              </select>
-            </div>
-          </div>
-          <div class="col-md-2">
-            <button type="button" class="btn btn-danger btn-sm btn-block eliminar-tarea">
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>
-        </div>
-        <input type="hidden" class="tarea-plantilla-id" name="tareas[${tareaIndex}][tarea_plantilla_id]" value="${tareaId}">
-        <input type="hidden" class="tarea-empleado-hidden" name="tareas[${tareaIndex}][empleado_id]" value="${$('#empleado_tarea_modal').val()}">
-        <input type="hidden" class="tarea-movil-hidden" name="tareas[${tareaIndex}][movil_id]" value="${$('#movil_tarea_modal').val()}">
-        <input type="hidden" class="tarea-observaciones-hidden" name="tareas[${tareaIndex}][observaciones]" value="${$('#observaciones_tarea_modal').val()}">
-      </div>
-    `;
-
-    // Agregar la tarea al contenedor
-    $('#tareas-container').append(nuevaTareaHTML);
-    $('#no-tareas-message').hide();
-
-    // Agregar eventos a los nuevos elementos
-    $('.tarea-item').last().find('.tarea-empleado').on('change', function() {
-      $(this).closest('.tarea-item').find('.tarea-empleado-hidden').val(this.value);
-    });
-
-    $('.tarea-item').last().find('.tarea-movil').on('change', function() {
-      $(this).closest('.tarea-item').find('.tarea-movil-hidden').val(this.value);
-    });
-
-    $('.tarea-item').last().find('.eliminar-tarea').on('click', function() {
-      $(this).closest('.tarea-item').remove();
-      if ($('.tarea-item').length === 0) {
-        $('#no-tareas-message').show();
-      }
-      actualizarIndices();
-    });
-
-    // Limpiar modal y cerrar
-    $('#agregarTareaForm')[0].reset();
-    $('#agregarTareaModal').modal('hide');
-
-    tareaIndex++;
-  });
-
-  // Función para actualizar índices de campos después de eliminar
-  function actualizarIndices() {
-    $('.tarea-item').each(function(index, tarea) {
-      $(tarea).find('.tarea-plantilla-id').attr('name', `tareas[${index}][tarea_plantilla_id]`);
-      $(tarea).find('.tarea-empleado-hidden').attr('name', `tareas[${index}][empleado_id]`);
-      $(tarea).find('.tarea-movil-hidden').attr('name', `tareas[${index}][movil_id]`);
-      $(tarea).find('.tarea-observaciones-hidden').attr('name', `tareas[${index}][observaciones]`);
-    });
-    tareaIndex = $('.tarea-item').length;
-  }
-
-  // Limpiar modal cuando se cierra
-  $('#agregarTareaModal').on('hidden.bs.modal', function() {
-    $('#agregarTareaForm')[0].reset();
-  });
-
 });
 </script>
 @endpush

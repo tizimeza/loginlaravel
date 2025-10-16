@@ -149,7 +149,11 @@
                     @endif
                   </td>
                   <td>
-                    <span class="text-muted">N/A</span>
+                    @if($orden->costo_estimado)
+                      ${{ number_format($orden->costo_estimado, 2) }}
+                    @else
+                      <span class="text-muted">Sin estimar</span>
+                    @endif
                   </td>
                   <td>
                     <div class="btn-group" role="group">
@@ -174,7 +178,6 @@
                                 @method('PATCH')
                                 <input type="hidden" name="estado" value="{{ $key }}">
                                 <button type="submit" class="dropdown-item">
-                                  <span class="badge badge-{{ \App\Models\OrdenTrabajo::getColorEstado($key) }} mr-1"></span>
                                   {{ $estado }}
                                 </button>
                               </form>
@@ -218,53 +221,6 @@
   </div>
 </div>
 
-<!-- Estadísticas rápidas -->
-<div class="row mt-3">
-  <div class="col-lg-3 col-6">
-    <div class="small-box bg-info">
-      <div class="inner">
-        <h3>{{ $ordenes->where('estado', 'pendiente')->count() }}</h3>
-        <p>Pendientes</p>
-      </div>
-      <div class="icon">
-        <i class="fas fa-clock"></i>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-3 col-6">
-    <div class="small-box bg-warning">
-      <div class="inner">
-        <h3>{{ $ordenes->where('estado', 'en_proceso')->count() }}</h3>
-        <p>En Proceso</p>
-      </div>
-      <div class="icon">
-        <i class="fas fa-cogs"></i>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-3 col-6">
-    <div class="small-box bg-success">
-      <div class="inner">
-        <h3>{{ $ordenes->where('estado', 'completado')->count() }}</h3>
-        <p>Completadas</p>
-      </div>
-      <div class="icon">
-        <i class="fas fa-check"></i>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-3 col-6">
-    <div class="small-box bg-danger">
-      <div class="inner">
-        <h3>{{ $ordenes->where('es_atrasada', true)->count() }}</h3>
-        <p>Atrasadas</p>
-      </div>
-      <div class="icon">
-        <i class="fas fa-exclamation-triangle"></i>
-      </div>
-    </div>
-  </div>
-</div>
 @endsection
 
 @push('scripts')

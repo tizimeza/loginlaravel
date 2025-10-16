@@ -259,6 +259,19 @@
               <p>Clientes</p>
             </a>
           </li>
+          <li class="nav-header">ADMINISTRACIÓN</li>
+          <li class="nav-item">
+            <a href="{{route('users.index')}}" class="nav-link {{request()->routeIs('users.*') ? 'active' : ''}}">
+              <i class="nav-icon fas fa-users"></i>
+              <p>Usuarios</p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{route('roles.index')}}" class="nav-link {{request()->routeIs('roles.*') ? 'active' : ''}}">
+              <i class="nav-icon fas fa-user-shield"></i>
+              <p>Roles y Permisos</p>
+            </a>
+          </li>
           <li class="nav-header">CONFIGURACIÓN</li>
           <li class="nav-item">
             <a href="#" class="nav-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
