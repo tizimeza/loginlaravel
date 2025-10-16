@@ -24,7 +24,7 @@ if ! command -v php &> /dev/null; then
     exit 1
 fi
 
-echo -e "${GREEN}[1/7]${NC} Instalando dependencias de Composer..."
+echo -e "${GREEN}[1/8]${NC} Instalando dependencias de Composer..."
 composer install
 if [ $? -ne 0 ]; then
     echo -e "${RED}[ERROR]${NC} Falló la instalación de dependencias de Composer"
@@ -32,7 +32,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo ""
-echo -e "${GREEN}[2/7]${NC} Verificando archivo .env..."
+echo -e "${GREEN}[2/8]${NC} Verificando archivo .env..."
 if [ ! -f .env ]; then
     echo "Copiando .env.example a .env..."
     cp .env.example .env
@@ -41,7 +41,7 @@ else
 fi
 
 echo ""
-echo -e "${GREEN}[3/7]${NC} Generando clave de aplicación..."
+echo -e "${GREEN}[3/8]${NC} Generando clave de aplicación..."
 php artisan key:generate
 if [ $? -ne 0 ]; then
     echo -e "${RED}[ERROR]${NC} Falló la generación de clave"
@@ -49,10 +49,15 @@ if [ $? -ne 0 ]; then
 fi
 
 echo ""
-echo -e "${GREEN}[4/7]${NC} Limpiando cachés..."
+echo -e "${GREEN}[4/8]${NC} Limpiando cachés..."
 php artisan config:clear
 php artisan cache:clear
 php artisan view:clear
+
+echo ""
+echo -e "${GREEN}[5/8]${NC} Publicando archivos de Spatie Permission..."
+php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+php artisan config:clear
 
 echo ""
 echo "========================================"
@@ -78,7 +83,7 @@ if [[ ! $REPLY =~ ^[Ss]$ ]]; then
 fi
 
 echo ""
-echo -e "${GREEN}[5/7]${NC} Ejecutando migraciones..."
+echo -e "${GREEN}[6/8]${NC} Ejecutando migraciones..."
 php artisan migrate
 if [ $? -ne 0 ]; then
     echo -e "${RED}[ERROR]${NC} Falló la ejecución de migraciones"
@@ -87,7 +92,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo ""
-echo -e "${GREEN}[6/7]${NC} Poblando base de datos con datos de prueba..."
+echo -e "${GREEN}[7/8]${NC} Poblando base de datos con datos de prueba..."
 php artisan db:seed
 if [ $? -ne 0 ]; then
     echo -e "${RED}[ERROR]${NC} Falló la población de datos"
@@ -95,7 +100,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo ""
-echo -e "${GREEN}[7/7]${NC} Creando enlace simbólico para storage..."
+echo -e "${GREEN}[8/8]${NC} Creando enlace simbólico para storage..."
 php artisan storage:link
 if [ $? -ne 0 ]; then
     echo -e "${YELLOW}[ADVERTENCIA]${NC} Falló la creación del enlace simbólico"

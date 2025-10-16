@@ -32,10 +32,6 @@ return new class extends Migration
             // Revertir cambios
             $table->dropForeign(['vehiculo_id']);
             $table->dropColumn(['vehiculo_id', 'capacidad_maxima', 'zona_trabajo']);
-            
-            // Restaurar skill
-            $table->dropColumn('especialidad');
-            $table->string('skill')->nullable()->after('color');
         });
     }
 };

@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // 1. Primero: Crear roles, permisos y usuarios
-        $this->call(RolePermissionSeeder::class);
+        $this->call(RoleAndPermissionSeeder::class);
 
         // 2. Datos geográficos
         $this->call(CountrySeeder::class);

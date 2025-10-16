@@ -22,7 +22,7 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-echo [1/7] Instalando dependencias de Composer...
+echo [1/8] Instalando dependencias de Composer...
 call composer install
 if %errorlevel% neq 0 (
     echo [ERROR] Fallo la instalacion de dependencias de Composer
@@ -31,7 +31,7 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo [2/7] Verificando archivo .env...
+echo [2/8] Verificando archivo .env...
 if not exist .env (
     echo Copiando .env.example a .env...
     copy .env.example .env
@@ -40,7 +40,7 @@ if not exist .env (
 )
 
 echo.
-echo [3/7] Generando clave de aplicacion...
+echo [3/8] Generando clave de aplicacion...
 call php artisan key:generate
 if %errorlevel% neq 0 (
     echo [ERROR] Fallo la generacion de clave
@@ -49,10 +49,15 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo [4/7] Limpiando caches...
+echo [4/8] Limpiando caches...
 call php artisan config:clear
 call php artisan cache:clear
 call php artisan view:clear
+
+echo.
+echo [5/8] Publicando archivos de Spatie Permission...
+call php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+call php artisan config:clear
 
 echo.
 echo ========================================
@@ -78,7 +83,7 @@ if /i not "%continuar%"=="S" (
 )
 
 echo.
-echo [5/7] Ejecutando migraciones...
+echo [6/8] Ejecutando migraciones...
 call php artisan migrate
 if %errorlevel% neq 0 (
     echo [ERROR] Fallo la ejecucion de migraciones
@@ -88,7 +93,7 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo [6/7] Poblando base de datos con datos de prueba...
+echo [7/8] Poblando base de datos con datos de prueba...
 call php artisan db:seed
 if %errorlevel% neq 0 (
     echo [ERROR] Fallo la poblacion de datos
@@ -97,7 +102,7 @@ if %errorlevel% neq 0 (
 )
 
 echo.
-echo [7/7] Creando enlace simbolico para storage...
+echo [8/8] Creando enlace simbolico para storage...
 call php artisan storage:link
 if %errorlevel% neq 0 (
     echo [ADVERTENCIA] Fallo la creacion del enlace simbolico

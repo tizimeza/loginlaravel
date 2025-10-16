@@ -23,19 +23,23 @@ class OrdenTrabajoFactory extends Factory
     {
         return [
             'numero_orden' => OrdenTrabajo::generarNumeroOrden(),
+            'tipo_servicio' => $this->faker->randomElement(['instalacion', 'reconexion', 'service', 'desconexion', 'mantenimiento']),
             'vehiculo_id' => 1, // Se sobrescribirá en el seeder
-            'cliente_nombre' => $this->faker->name(),
+            'cliente_id' => null, // Se puede asignar un cliente si existe
             'cliente_telefono' => $this->faker->phoneNumber(),
             'cliente_email' => $this->faker->safeEmail(),
             'descripcion_problema' => $this->faker->paragraph(3),
             'fecha_ingreso' => now()->subDays(rand(1, 30)),
             'fecha_estimada_entrega' => now()->addDays(rand(1, 15)),
             'fecha_entrega_real' => null,
-            'estado' => $this->faker->randomElement(array_keys(OrdenTrabajo::ESTADOS)),
-            'prioridad' => $this->faker->randomElement(array_keys(OrdenTrabajo::PRIORIDADES)),
+            'estado' => $this->faker->randomElement(['pendiente', 'en_proceso', 'completado', 'cancelado']),
+            'prioridad' => $this->faker->randomElement(['baja', 'media', 'alta', 'urgente']),
             'costo_estimado' => $this->faker->randomFloat(2, 100, 5000),
             'costo_final' => null,
             'observaciones' => $this->faker->optional()->paragraph(),
+            'es_cliente_premium' => $this->faker->boolean(30),
+            'telefono_contacto' => $this->faker->optional()->phoneNumber(),
+            'horario_preferido' => $this->faker->optional()->randomElement(['mañana', 'tarde', 'noche']),
             'user_id' => 1, // Se sobrescribirá en el seeder
         ];
     }

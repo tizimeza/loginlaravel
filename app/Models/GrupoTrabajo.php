@@ -126,11 +126,11 @@ class GrupoTrabajo extends Model
     }
 
     /**
-     * Scope para filtrar por skill
+     * Scope para filtrar por especialidad
      */
-    public function scopeConSkill($query, $skill)
+    public function scopeConEspecialidad($query, $especialidad)
     {
-        return $query->where('skill', $skill);
+        return $query->where('especialidad', $especialidad);
     }
 
     /**
