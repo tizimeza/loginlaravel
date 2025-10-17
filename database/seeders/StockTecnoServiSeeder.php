@@ -288,7 +288,10 @@ class StockTecnoServiSeeder extends Seeder
         ];
 
         foreach ($materiales as $material) {
-            Stock::create($material);
+            Stock::updateOrCreate(
+                ['codigo' => $material['codigo']],
+                $material
+            );
         }
 
         $this->command->info('Se han creado ' . count($materiales) . ' productos en el stock de TecnoServi');

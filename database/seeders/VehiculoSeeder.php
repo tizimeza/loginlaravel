@@ -19,7 +19,10 @@ class VehiculoSeeder extends Seeder
     public function run()
     {
         // Limpiar vehículos existentes (opcional)
+        // No usar truncate() porque hay foreign keys que dependen de esta tabla
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Vehiculo::truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $this->command->info('Vehículos anteriores eliminados.');
 
         // Vehículos de TecnoServi con datos completos
